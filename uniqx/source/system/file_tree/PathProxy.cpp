@@ -25,7 +25,7 @@ namespace
     uniqx
 {
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::perma
         ( uniqx::MutateGlobalState )
     -> PathProxy&
@@ -37,7 +37,7 @@ namespace
         
     }
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::linkTo
         (
             const std::fs::path& k_ref_fsp_target_ ,
@@ -181,7 +181,7 @@ namespace
         
     }
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::unlink
         ( const std::src_loc k_sl_srcLoc_ ) const
     -> std::expected<PathProxy , nullix::ErrInt_t_>
@@ -262,7 +262,7 @@ namespace
         
     }
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::prune
         ( const std::src_loc k_sl_srcLoc_ ) const
     -> std::expected<PathProxy , nullix::ErrInt_t_>
@@ -391,7 +391,7 @@ namespace
         
     }
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::cleanBroken
         ( const std::src_loc k_sl_srcLoc_ ) const
     -> std::expected <PathProxy , nullix::ErrInt_t_>
@@ -490,7 +490,7 @@ namespace
         
     }
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::string
         ( void /* v_ */ ) const
     -> std::string
@@ -500,7 +500,7 @@ namespace
         
     }
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::operator /
         ( std::string_view strv_sub_ ) const
     -> PathProxy
@@ -510,7 +510,7 @@ namespace
         
     }
     
-    auto FileTree::
+    auto uniqx::system::FileTree::
         PathProxy::operator >>=
         ( const std::fs::path& k_ref_fsp_linkTarget_ ) const
     -> std::expected<PathProxy , nullix::ErrInt_t_>
@@ -520,7 +520,7 @@ namespace
         
     }
     
-    FileTree::PathProxy::
+    uniqx::system::FileTree::PathProxy::
         operator std::fs::path
         ( void /* v_ */ ) const
     {
@@ -529,7 +529,7 @@ namespace
         
     }
     
-    FileTree::PathProxy::
+    uniqx::system::FileTree::PathProxy::
         operator std::string
         ( void /* v_ */ ) const
     {

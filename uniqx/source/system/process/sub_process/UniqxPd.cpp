@@ -402,7 +402,7 @@ namespace [[
                             ::read
                             (
                                 this->PM_i_pd ,
-                                &ref_str_resBufData_ [ k_zu_oldSize ] ,
+                                std::move(&ref_str_resBufData_ [ k_zu_oldSize ]) ,
                                 k_zu_toRead
                             )
                         }
@@ -419,7 +419,7 @@ namespace [[
         }
         return true;
     }
-
+    
     if
         ( k_pst_state == _em_Closed ) [[ unlikely ]]
     {
@@ -428,7 +428,7 @@ namespace [[
         return false;
         
     }
-
+    
     return true;
 }
     

@@ -3,9 +3,11 @@
 #ifndef SYS_PROC_HPP_UNIQX_
     #define SYS_PROC_HPP_UNIQX_
     
-    #include <cstdint>
-#include <string>
+    #include <print>
+    #include <ranges>
+    #include <string>
     #include <vector>
+    #include <cstdint>
     
     #define ONLY_FORWARD_SYMBOL_DECLS_UNIQX_
     #
@@ -31,7 +33,7 @@
                 /// Pipe Descriptor Spawner
                 private: struct UniqxPipe;
                 
-                private: enum class
+                public: enum class
                     ProcOpt : uint_fast16_t
                     {
                         null_ = ( 0 << 0 ) , /* null_ 0 << 0 = 0 */
@@ -45,11 +47,12 @@
                 public: using opt_t = ProcOpt;
                 public: using Result_t = ProcResult;
                 private: using string_t = std::string;
+                private: using vecStr_t = std::vector<std::string>;
                 
-                private: mutable ProcOpt PM_pOpt_opt { };
-                private: std::string PM_str_command;
-                private: std::string PM_str_inputData;
-                private: std::vector<std::string> PM_vecStr_argv;
+                private: string_t PM_str_inputData;
+                private: mutable opt_t PM_pOpt_opt { };
+                private: mutable string_t PM_str_command;
+                private: mutable vecStr_t mut_PM_vecStr_argv;
                 private: mutable ProcResult mut_PM_pRes_cmdResult;
                 
                 // public: using Config_t = Config;
@@ -93,8 +96,8 @@
                 /// Class Constructor
                 public: explicit CLASS_CTOR SubProcess
                     (
-                        const std::string& /* k_ref_str_binName_ */ ,
-                        const std::vector<string_t>& /* k_ref_vecStr_argv_ */
+                        const string_t& /* kr_str_binName_ */ ,
+                        const vecStr_t& /* kr_vecStr_argv_ */
                     )
                 ;
                 
@@ -107,10 +110,14 @@
                 public: auto
                     static create
                     (
-                        const std::string& /* k_ref_str_binName_ */ ,
-                        const std::vector<string_t>& /* k_ref_vecStr_argv_ */
+                        const string_t& /* kr_str_binName_ */ ,
+                        const vecStr_t& /* kr_vecStr_argv_ */ = { }
                     )
                 -> SubProcess;
+                
+                public: auto printArgs
+                    ( void /* v_ */ ) const
+                -> void;
                 
                 public: auto run
                     ( void /* v_ */ ) const
@@ -126,16 +133,41 @@
                     ( void /* v_ */ ) const
                 -> const Result_t&
                 {
-                    return ( this->mut_PM_pRes_cmdResult );
+                    return this->mut_PM_pRes_cmdResult;
                 }
+                
+                public: auto operator ( )
+                    ( const string_t& /* kr_str_argv_ */ ) const
+                -> const SubProcess&;
+                
+                public: auto operator [ ]
+                    ( const string_t& /* kr_str_argv_ */ ) const
+                -> const SubProcess&;
+                
+                
+                auto inline run
+                ( ProcOpt opt_IO_ ) const
+            -> const SubProcess&
+            {
+                
+                PM_pOpt_opt |= opt_IO_;
+                
+                this->mut_PM_pRes_cmdResult =
+                    this->SubProcess::mt_Res_execute ( this->PM_pOpt_opt )
+                ;
+                
+                return ( *this );
+                
+            }
+            
+        
                 
             }
         ;
         
         auto hasFlag
-        ( const system::process::SubProcess::opt_t opt_IO_ )
-    -> bool;
-
+            ( const system::process::SubProcess::opt_t opt_IO_ )
+        -> bool;
         
     } /* namespace uniqx */
     

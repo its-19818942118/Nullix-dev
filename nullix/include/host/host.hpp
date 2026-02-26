@@ -1,22 +1,22 @@
 /* #pragma once */
 
-#ifndef HOST_HPP_NULLIX_TA9_GC_
-    #define HOST_HPP_NULLIX_TA9_GC_
+#ifndef HOST_HPP_NULLIX_
+    #define HOST_HPP_NULLIX_
     
     #include <expected>
     #include <filesystem>
     
-    #define ONLY_FORWARD_SYMBOL_DECLS_NULLIX_TA9_GC_
+    #define ONLY_FORWARD_SYMBOL_DECLS_NULLIX_
     #
     #   include "nullix.hpp"
     #
-    #undef ONLY_FORWARD_SYMBOL_DECLS_NULLIX_TA9_GC_
+    #undef ONLY_FORWARD_SYMBOL_DECLS_NULLIX_
     
-    #define ONLY_FORWARD_SYMBOL_DECLS_UNIQX_TA9_GC_
+    #define ONLY_FORWARD_SYMBOL_DECLS_UNIQX_
     #
     #   include "uniqx.hpp"
     #
-    #undef ONLY_FORWARD_SYMBOL_DECLS_UNIQX_TA9_GC_
+    #undef ONLY_FORWARD_SYMBOL_DECLS_UNIQX_
     
     #include "file_tree/FileTree.hpp"
     
@@ -43,7 +43,7 @@
                 |* * (config, cache, local) & the dotfile source repository.
                 |*************************************************************/
                 // public: class FileTree;
-                public: uniqx::FileTree dirs;
+                public: uniqx::system::FileTree dirs;
                 
                 private: [[
                     nodiscard
@@ -97,4 +97,4 @@
         
     } /* namespace nullix */
     
-#endif /* HOST_HPP_NULLIX_TA9_GC_ */
+#endif /* HOST_HPP_NULLIX_ */

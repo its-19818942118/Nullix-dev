@@ -20,7 +20,9 @@
         uniqx
     {
         
-        class FileTree::PathProxy
+        class [[
+            /* nullAttr_ */
+        ]] system::FileTree::PathProxy
             {
                 
                 public: FileTree& parent;
