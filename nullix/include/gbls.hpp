@@ -1,11 +1,11 @@
 #pragma once
 
 #include <array>
+#include <string>
 #include <cstdlib>
+#include <unistd.h>
 #include <filesystem>
 #include <diagnostics.h>
-#include <string>
-#include <unistd.h>
 
 namespace
     std::fs
@@ -20,17 +20,17 @@ namespace
     
     auto inline
         homeDir
-        ( void )
-    -> const std::fs::path
+        ( void /* v_ */ )
+    -> std::fs::path const
     {
         
         if
-            ( const auto& home = std::getenv ( "HOME" ) )
+            ( auto const& home = std::getenv ( "HOME" ) )
         {
             return std::fs::path { home };
         }
         else if
-            ( const auto& xdgHome = std::getenv ( "$XDG_HOME" ) )
+            ( auto const& xdgHome = std::getenv ( "$XDG_HOME" ) )
         {
             return std::fs::path { xdgHome };
         }
@@ -39,10 +39,9 @@ namespace
         
     }
     
-    auto inline
-        src
-        ( void )
-    -> const std::fs::path
+    auto inline src
+        ( void /* v_ */ )
+    -> std::fs::path const
     {
         
         return
@@ -56,70 +55,61 @@ namespace
     
     auto inline
         cache
-        ( void )
-    -> const std::fs::path
+        ( void /* v_ */ )
+    -> std::fs::path const
     {
         
-        const auto
-            path
-            {
-                homeDir ( ) /
-                std::fs::path { ".cache/nullix" }
-            }
-        ;
+        auto const _k_path { homeDir ( ) / std::fs::path { ".cache/nullix" } };
         
-        return { path };
+        return { _k_path };
         
     }
     
     auto inline
         thmbCache
-        ( void )
-    -> const std::fs::path
+        ( void /* v_ */ )
+    -> std::fs::path const
     {
         
-        const auto path { cache ( ) / "thumbnails" };
+        auto const _k_path { cache ( ) / "thumbnails" };
         
-        return { path };
+        return { _k_path };
         
     }
     
     auto inline
         blurCache
-        ( void )
-    -> const std::fs::path
+        ( void /* v_ */ )
+    -> std::fs::path const
     {
         
-        const auto path { cache ( ) / "blur" };
+        auto const _k_path { cache ( ) / "blur" };
         
-        return { path };
+        return { _k_path };
         
     }
     
     auto inline
         clrsCache
-        ( void )
-    -> const std::fs::path
+        ( void /* v_ */ )
+    -> std::fs::path const
     {
         
-        const auto path { cache ( ) / "clrs" };
+        auto const _k_path { cache ( ) / "clrs" };
         
-        return { path };
+        return { _k_path };
         
     }
     
 }
 
-
 namespace
     nullix::utils
 {
     
-    auto
-      inline
-        getEnv
+    auto inline getEnv
         ( std::string envVar_ )
-    -> const std::string
+    -> std::string const
     {
         
         if
@@ -129,7 +119,7 @@ namespace
         }
         
         if
-            ( const auto& _envVar = std::getenv ( envVar_.c_str ( ) ) )
+            ( auto const& _envVar = std::getenv ( envVar_.c_str ( ) ) )
         {
             return { _envVar };
         }
@@ -138,10 +128,8 @@ namespace
         
     }
     
-    auto
-      inline
-        sysProc
-        ( const std::string& )
+    auto inline sysProc
+        ( std::string const& )
     {
         
         std::array<int, 2> _pipeFd { };
@@ -154,30 +142,28 @@ namespace
         
     }
     
-    auto
-      inline
-        mkdir
-        ( const std::fs::path& path )
-    -> const std::fs::path
+    auto inline mkdir
+        ( std::fs::path const& kr_fsp_path_ )
+    -> std::fs::path const
     {
         
         if
-            ( path.is_relative() )
+            ( kr_fsp_path_.is_relative ( ) )
         {
             
-            const auto& relPath { std::fs::current_path ( ) / path };
+            auto const& kr_relPath { std::fs::current_path ( ) / kr_fsp_path_ };
             
-            std::fs::create_directories ( relPath );
-            return { relPath.lexically_normal ( ) };
+            std::fs::create_directories ( kr_relPath );
+            return { kr_relPath.lexically_normal ( ) };
         }
         
         else if
-            ( path.is_absolute ( ) )
+            ( kr_fsp_path_.is_absolute ( ) )
         {
             
-            std::fs::create_directories ( path );
+            std::fs::create_directories ( kr_fsp_path_ );
             
-            return { path.lexically_normal ( ) };
+            return { kr_fsp_path_.lexically_normal ( ) };
             
         }
         
@@ -197,16 +183,16 @@ namespace nullix {
          */
         template <typename T>
         static auto to_num(std::string_view sv, T default_val = { }) -> T {
-            if (sv.empty()) return default_val;
+            if (sv.empty ( )) return default_val;
 
             T val{};
             
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunsafe-buffer-usage"
             // The standard library requires start and end pointers.
-            const char* first = sv.data();
-            const char* last = sv.data() + sv.size();
-            const auto [ptr, ec] = std::from_chars(first, last, val);
+            char const* first = sv.data ( );
+            char const* last = sv.data ( ) + sv.size ( );
+            auto const [ptr, ec] = std::from_chars(first, last, val);
 #pragma clang diagnostic pop
 
             if (ec == std::errc{}) {

@@ -28,10 +28,10 @@
             Host
             {
                 /* variable to store the user name */
-                public: const std::string kpm_str_userName { };
+                public: std::string const pmk_str_userName { };
                 
                 /* variable to store the host name */
-                public: const std::string kpm_str_hostName { };
+                public: std::string const pmk_str_hostName { };
                 
                 /* class to manager & oraganize the host base dirs */
                 /*************************************************************|
@@ -51,7 +51,7 @@
                 ]] auto static
                     _mtGet_str_userName
                     (
-                        const std::src_loc /* k_sl_srcLoc_ */ =
+                        std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     )
                 -> std::expected <std::string , Err_t_>;
@@ -62,7 +62,7 @@
                 ]] auto static
                     _mtGet_str_hostName
                     (
-                        const std::src_loc /* k_sl_srcLoc_ */ =
+                        std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     )
                 -> std::expected <std::string, Err_t_>;
@@ -84,7 +84,7 @@
                 
                 public: explicit
                     CLASS_CTOR Host
-                    ( const std::fs::path& /* k_ref_fsp_userHome_ */ )
+                    ( std::fs::path const& /* kr_fsp_userHome_ */ )
                 ;
                 
                 public:

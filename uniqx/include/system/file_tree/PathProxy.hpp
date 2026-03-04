@@ -32,29 +32,29 @@
                 
                 public: auto linkTo
                     (
-                        const std::fs::path& /* fsp_target_ */ ,
-                        const std::src_loc /* k_sl_srcLoc_ */ =
+                        std::fs::path const& /* kr_fsp_target_ */ ,
+                        std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     ) const
                 -> std::expected<PathProxy , nullix::ErrInt_t_>;
                 
                 public: auto unlink
                     (
-                        const std::src_loc /* k_sl_srcLoc_ */ =
+                        std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     ) const
                 -> std::expected<PathProxy , nullix::ErrInt_t_>;
                 
                 public: auto prune
                     (
-                        const std::src_loc /* k_sl_srcLoc_ */ =
+                        std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     ) const
                 -> std::expected<PathProxy , nullix::ErrInt_t_>;
                 
                 public: auto cleanBroken
                     (
-                        const std::src_loc /* k_sl_srcLoc_ */ =
+                        std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     ) const
                 -> std::expected <PathProxy , nullix::ErrInt_t_>;
@@ -72,7 +72,7 @@
                 -> PathProxy;
                 
                 public: auto operator >>=
-                    ( const std::fs::path& /* k_ref_fsp_linkTarget_ */ ) const
+                    ( std::fs::path const& /* kr_fsp_linkTarget_ */ ) const
                 -> std::expected<PathProxy , nullix::ErrInt_t_>;
                 
                 public: operator

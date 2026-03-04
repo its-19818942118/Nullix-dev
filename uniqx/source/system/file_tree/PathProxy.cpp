@@ -40,8 +40,8 @@ namespace
     auto uniqx::system::FileTree::
         PathProxy::linkTo
         (
-            const std::fs::path& k_ref_fsp_target_ ,
-            const std::src_loc k_sl_srcLoc_
+            std::fs::path const& kr_fsp_target_ ,
+            std::src_loc const k_sl_srcLoc_
         ) const
     -> std::expected <PathProxy , nullix::ErrInt_t_>
     {
@@ -70,22 +70,22 @@ namespace
         
         if
             (
-                std::fs::exists ( k_ref_fsp_target_ ) ||
-                std::fs::is_symlink ( k_ref_fsp_target_ )
+                std::fs::exists ( kr_fsp_target_ ) ||
+                std::fs::is_symlink ( kr_fsp_target_ )
             )
         {
             std::println
                 (
                     stderr ,
                     "[uniqx]: skipping target_path {} because it already exists"
-                    , k_ref_fsp_target_.string ( )
+                    , kr_fsp_target_.string ( )
                 )
             ;
             return { *this };
         }
         
         std::fs::create_directories
-            ( k_ref_fsp_target_.parent_path ( ) , _ec_errCode )
+            ( kr_fsp_target_.parent_path ( ) , _ec_errCode )
         ;
         
         if
@@ -109,7 +109,7 @@ namespace
         
         _ec_errCode.clear ( );
         
-        std::fs::path _fsp_tmpLink { k_ref_fsp_target_ };
+        std::fs::path _fsp_tmpLink { kr_fsp_target_ };
         _fsp_tmpLink.replace_extension ( ".uniqx-nullix_tmpLink" );
         
         if
@@ -148,7 +148,7 @@ namespace
         
         _ec_errCode.clear ( );
         
-        std::fs::rename ( _fsp_tmpLink , k_ref_fsp_target_ , _ec_errCode );
+        std::fs::rename ( _fsp_tmpLink , kr_fsp_target_ , _ec_errCode );
         
         if
             ( _ec_errCode )
@@ -173,7 +173,7 @@ namespace
             (
                 stderr ,
                 "[uniqx]: synced target_path {}" ,
-                k_ref_fsp_target_.string ( )
+                kr_fsp_target_.string ( )
             )
         ;
         
@@ -183,13 +183,13 @@ namespace
     
     auto uniqx::system::FileTree::
         PathProxy::unlink
-        ( const std::src_loc k_sl_srcLoc_ ) const
+        ( std::src_loc const k_sl_srcLoc_ ) const
     -> std::expected<PathProxy , nullix::ErrInt_t_>
     {
         
         std::error_code _ec_errCode { };
         
-        const auto&
+        auto const&
             k_b_isLink
             { std::fs::is_symlink ( this->current , _ec_errCode ) }
         ;
@@ -264,14 +264,14 @@ namespace
     
     auto uniqx::system::FileTree::
         PathProxy::prune
-        ( const std::src_loc k_sl_srcLoc_ ) const
+        ( std::src_loc const k_sl_srcLoc_ ) const
     -> std::expected<PathProxy , nullix::ErrInt_t_>
     {
         
         std::error_code _ec_errCode { };
         
         if
-            ( const auto& k_res { this->unlink ( ) }; !k_res )
+            ( auto const& k_res { this->unlink ( ) }; !k_res )
         {
             return { k_res };
         }
@@ -393,7 +393,7 @@ namespace
     
     auto uniqx::system::FileTree::
         PathProxy::cleanBroken
-        ( const std::src_loc k_sl_srcLoc_ ) const
+        ( std::src_loc const k_sl_srcLoc_ ) const
     -> std::expected <PathProxy , nullix::ErrInt_t_>
     {
         
@@ -401,20 +401,20 @@ namespace
         
         for
             (
-                const auto& k_fsdir_entry :
+                auto const& k_fsdir_entry :
                 std::fs::directory_iterator ( this->current )
             )
         {
             
-            const std::fs::path& k_ref_fsp_link { k_fsdir_entry.path ( ) };
+            std::fs::path const& kr_fsp_link { k_fsdir_entry.path ( ) };
             
-            if ( !std::fs::is_symlink ( k_ref_fsp_link ) ) continue;
+            if ( !std::fs::is_symlink ( kr_fsp_link ) ) continue;
             
             std::error_code _ec_errCode { };
             
             std::fs::path
                 _fsp_target
-                { std::fs::read_symlink ( k_ref_fsp_link , _ec_errCode ) }
+                { std::fs::read_symlink ( kr_fsp_link , _ec_errCode ) }
             ;
             
             if
@@ -445,7 +445,7 @@ namespace
                         {
                             _fsp_target.is_absolute ( )
                             ? _fsp_target
-                            : k_ref_fsp_link.parent_path ( ) / _fsp_target
+                            : kr_fsp_link.parent_path ( ) / _fsp_target
                         }
                     ;
                     std::fs::exists ( _fsp_resolved )
@@ -455,7 +455,7 @@ namespace
             }
             
             _ec_errCode.clear ( );
-            std::fs::remove(k_ref_fsp_link, _ec_errCode);
+            std::fs::remove(kr_fsp_link, _ec_errCode);
             
             if
                 ( _ec_errCode )
@@ -480,7 +480,7 @@ namespace
                 (
                     stderr ,
                     "[uniqx]: Removed broken link: {}"
-                    , k_ref_fsp_link.string ( )
+                    , kr_fsp_link.string ( )
                 )
             ;
             
@@ -512,11 +512,11 @@ namespace
     
     auto uniqx::system::FileTree::
         PathProxy::operator >>=
-        ( const std::fs::path& k_ref_fsp_linkTarget_ ) const
+        ( std::fs::path const& kr_fsp_linkTarget_ ) const
     -> std::expected<PathProxy , nullix::ErrInt_t_>
     {
         
-        return this->linkTo ( k_ref_fsp_linkTarget_ );
+        return this->linkTo ( kr_fsp_linkTarget_ );
         
     }
     

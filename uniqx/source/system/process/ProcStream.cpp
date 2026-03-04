@@ -44,7 +44,7 @@ namespace [[
     
     auto
         ProcStream::_has
-        ( const ProcStream k_prs_other_ ) const
+        ( ProcStream const k_prs_other_ ) const
         noexcept ( true )
     -> bool
     {
@@ -61,7 +61,7 @@ namespace [[
     
     auto
         ProcStream::operator |
-        ( const ProcStream k_prs_rhs_ ) const
+        ( ProcStream const k_prs_rhs_ ) const
         noexcept ( true )
     -> ProcStream
     {
@@ -83,7 +83,7 @@ namespace [[
     
     auto
         ProcStream::operator &
-        ( const ProcStream k_prs_rhs_ ) const
+        ( ProcStream const k_prs_rhs_ ) const
         noexcept ( true )
     -> bool
     {
@@ -94,7 +94,7 @@ namespace [[
     
     auto
         ProcStream::operator |=
-        ( const ProcStream k_prs_rhs_ ) const
+        ( ProcStream const k_prs_rhs_ ) const
         noexcept ( true )
     -> ProcStream&
     {
@@ -107,7 +107,7 @@ namespace [[
     
     auto
         ProcStream::operator !=
-        ( const PM_e_Details_ k_rhs_ ) const
+        ( PM_e_Details_ const k_rhs_ ) const
         noexcept ( true )
     -> bool
     {

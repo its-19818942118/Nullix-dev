@@ -74,7 +74,7 @@
                     ( void /* v_ */ ) const
                 -> bool;
                 
-                public: template<std::predicate<const ProcResult&> Rule>
+                public: template<std::predicate<ProcResult const&> Rule>
                     auto success
                     ( Rule&& /* p_rule_ */ ) const
                 -> bool;

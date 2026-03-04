@@ -1,31 +1,33 @@
 /* #pragma once */
 
-#ifndef ARGSPARSER_HPP_HYPRSCRIPTSPP
-    #define ARGSPARSER_HPP_HYPRSCRIPTSPP
+#ifndef ARGSPARSER_HPP_
+    #define ARGSPARSER_HPP_
     
-    #include <span>
-    #include <cstddef>
-    #include <functional>
-    #include <string_view>
-    #include <unordered_map>
+    #include<span>
+    #include<cstddef>
+    #include<functional>
+    #include<string_view>
+    #include<unordered_map>
     
-    namespace nullix
+    #include "globals.hpp"
+    
+    namespace [[
+        /* nullAttr_ */
+    ]] nullix
     {
         
-        class ArgsParser
+        class [[
+            /* nullAttr_ */
+        ]] ArgsParser
             {
                 
-                public: struct
-                    Command
-                ;
+                public: struct Command;
                 
-                private: std::span <char* , std::dynamic_extent>
+                private: std::span<char* , std::dynamic_extent>
                     sp_PM_args
                 ;
                 // Internal state to track progress
-                private: mutable
-                    std::size_t mut_zu_PM_cursor { 1ZU }
-                ;
+                private: mutable std::size_t PMm_zu_cursor { +1ZU };
                 
                 /// Typedefs:
                 private: using
@@ -33,87 +35,68 @@
                 ;
                 
                 private: using
-                    _container_t = std::span <char* , std::dynamic_extent >
+                    container_t_ = std::span<char* , std::dynamic_extent>
                 ;
                 
                 private: using
-                    _iterator_t = _container_t::iterator
+                    iterator_t_ = container_t_::iterator
                 ;
                 
                 private: using
-                    _l_itr_diff_t = std::iter_difference_t <long>
+                    l_itr_diff_t_ = std::iter_difference_t<long>
                 ;
                 
                 private: using
-                    _const_iterator_t = _container_t::const_iterator
+                    k_Iterator_t_ = container_t_::const_iterator
                 ;
                 
                 
-                public: using
-                    Args_t_ = std::unordered_map <_strV_t , Command>
-                ;
+                public: using Args_t_ = std::unordered_map<_strV_t , Command>;
                 
                 
-                public: struct
-                    Command
+                public: struct [[
+                    /* nullAttr_ */
+                ]] Command
                     {
-                        using
-                            Action = std::function < void ( _strV_t ) >
-                        ;
+                        using Action = std::function<void ( _strV_t )>;
                         
-                        using
-                            Validation = std::function < bool ( _strV_t ) >
-                        ;
+                        using Validation = std::function<bool ( _strV_t )>;
                         
-                        using
-                            Description = std::string_view
-                        ;
+                        using Description = std::string_view;
                         
                     
-                        Action execute;  // The "Worker"
+                        Action execute; // The "Worker"
                         Validation is_valid; // The "Gatekeeper"
                         Description description; // The "Helper"
                         
                     }
                 ;
                 
-                public: std::size_t
-                    size
+                public: auto size
                     ( void /* v_ */ ) const
-                ;
+                -> std::size_t;
                 
-                public: _strV_t
-                    operator []
+                public: _strV_t operator [ ]
                     ( std::size_t /* zu_idx_ */ ) const
                 ;
                 
-                public: _strV_t
-                    at
-                    ( std::size_t /*  zu_idx_ */ ) const
-                ;
+                public: auto at
+                    ( std::size_t /* zu_idx_ */ ) const
+                -> _strV_t;
                 
-                public: const
-                  _iterator_t
-                    begin
+                public: auto begin
                     ( void /* v_ */ ) const
-                ;
+                -> iterator_t_ const;
                 
-                public: const
-                  _iterator_t
-                    end
+                public: auto end
                     ( void /* v_ */ ) const
-                ;
+                -> iterator_t_ const;
                 
-                public: void
-                    dispatch
-                    (
-                        const
-                          Args_t_&
-                        /* cst_map_ref_HANDLERS_ */
-                    ) const
-                ;
+                public: auto dispatch
+                    ( Args_t_ const& /* kr_map_HANDLERS_ */ ) const
+                -> void;
                 
-                public:
+                public: CLASS_CTOR
                     ArgsParser
                     (
                         std::size_t /* zu_argc_ */ ,
@@ -126,4 +109,4 @@
         
     } /* namespace hyprscriptpp */
     
-#endif /* ARGSPARSER_HPP_HYPRSCRIPTSPP */
+#endif /* ARGSPARSER_HPP_ */

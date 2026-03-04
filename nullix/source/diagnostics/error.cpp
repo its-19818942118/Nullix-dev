@@ -11,22 +11,23 @@ namespace
     nullix::err::v1
 {
     
-    [[
+    CLASS_CTOR [[
         deprecated
         ( "Please use `nullix::err::v2::Error` instead" )
-    ]] Error::Error
+    ]] Error::
+            Error
             (
-                const std::string& errWhat_ ,
-                const std::source_location& errWhere_ =
+                std::string const& kr_s_errWhat_ ,
+                std::source_location const& kr_sl_errWhere_ =
                 { std::source_location::current ( ) }
             )
-        : _errWhat ( errWhat_ )
-        , _errWhere ( errWhere_ )
+        : _errWhat ( kr_s_errWhat_ )
+        , _errWhere ( kr_sl_errWhere_ )
     { }
     
     constexpr auto
         Error::mt_str_value_or_log
-        ( const std::string& fallback_ ) const
+        ( std::string const& fallback_ ) const
     -> std::string
     {
         
@@ -51,24 +52,24 @@ namespace
         
     }
     
-    [[
+    CLASS_CTOR [[
         deprecated
         ( "Please use `nullix::err::v2::ErrorCode` instead" )
     ]] ErrorInt::
-        ErrorInt
+            ErrorInt
             (
-                const long& errCode_ ,
-                const std::string& errWhat_ ,
-                const std::source_location& errWhere_ =
+                long const k_l_errCode_ ,
+                std::string const& kr_s_errWhat_ ,
+                std::source_location const& kr_sl_errWhere_ =
                 { std::source_location::current ( ) }
             )
-        : Error ( errWhat_ , errWhere_ )
-        , _errCode ( errCode_ )
+        : Error ( kr_s_errWhat_ , kr_sl_errWhere_ )
+        , _errCode ( k_l_errCode_ )
     { }
     
     constexpr auto
         ErrorInt::mt_str_value_or_log
-        ( const std::string& fallback_ ) const
+        ( std::string const& fallback_ ) const
     -> std::string
     {
         
@@ -97,9 +98,8 @@ namespace
     
     [[
         nodiscard
-        ( "Important: returns sanitized errWhat_" )
-    ]] auto
-        sanErr
+        ( "Important: returns sanitized kr_s_errWhat_" )
+    ]] auto sanErr
         ( std::string_view errWhatRaw_ )
     -> std::string
     {
@@ -118,7 +118,7 @@ namespace
         for
             (
                 std::size_t _col { 0xF };
-                const auto& c : errWhatRaw_
+                auto const& c : errWhatRaw_
             ) [[likely]]
         {
             if
@@ -150,16 +150,16 @@ namespace
     CLASS_CTOR
         Error:: Error
             (
-                const e_ErrType errType_ ,
-                const std::string errWhat_ ,
-                const std::source_location errWhereCaller_ ,
-                const std::source_location errWhereOrigin_
+                e_ErrType const errType_ ,
+                std::string const k_s_errWhat_ ,
+                std::source_location const k_sl_errWhereCaller_ ,
+                std::source_location const k_sl_errWhereOrigin_
             )
-        : kPm_errType ( std::move ( errType_ ) )
-        , kPm_errWhat ( std::move ( errWhat_ ) )
-        , kPm_errWhat_ ( detail::sanErr ( kPm_errWhat ) )
-        , kPm_errWhereCaller ( std::move ( errWhereCaller_ ) )
-        , kPm_errWhereOrigin ( std::move ( errWhereOrigin_ ) )
+        : Pmk_errType ( std::move ( errType_ ) )
+        , Pmk_errWhat ( std::move ( k_s_errWhat_ ) )
+        , Pmkr_str_errWhat_ ( detail::sanErr ( Pmk_errWhat ) )
+        , Pmk_errWhereCaller ( std::move ( k_sl_errWhereCaller_ ) )
+        , Pmk_errWhereOrigin ( std::move ( k_sl_errWhereOrigin_ ) )
     { }
     
     [[
@@ -171,33 +171,32 @@ namespace
     -> std::string
     {
         
-        using namespace std::literals;
         std::string_view _errLevel { };
         
         switch
-            ( kPm_errType )
+            ( Pmk_errType )
         {
             case
                 e_ErrType::Fatal:
             {
-                _errLevel = "Err.Fatal"sv;
+                _errLevel = "Err.Fatal";
                 break;
             }
             case
                 e_ErrType::Warning:
             {
-                _errLevel = "Err.Warnng"sv;
+                _errLevel = "Err.Warnng";
                 break;
             }
             case
                 e_ErrType::Unknown:
             {
-                _errLevel = "Err.unknown"sv;
+                _errLevel = "Err.unknown";
                 break;
             }
         }
         
-        const auto&
+        auto const&
             _errLog
             {
                 
@@ -231,12 +230,12 @@ namespace
                     ":[\x1b[1m{1}\x1b[0m]>\n"
                     "{0:=>80}\n"
                     , ""
-                    , kPm_errWhat_
+                    , Pmk_errWhat
                     , _errLevel
-                    , kPm_errWhereOrigin.line ( )
-                    , kPm_errWhereOrigin.column ( )
-                    , kPm_errWhereOrigin.file_name ( )
-                    , kPm_errWhereOrigin.function_name ( )
+                    , Pmk_errWhereOrigin.line ( )
+                    , Pmk_errWhereOrigin.column ( )
+                    , Pmk_errWhereOrigin.file_name ( )
+                    , Pmk_errWhereOrigin.function_name ( )
                 )
                 
             }
@@ -251,7 +250,7 @@ namespace
         ( "Important: returns a fallback_ value" ) ,
     ]] auto
         Error::mt_str_fallback
-        ( const std::string& fallback_ ) const
+        ( std::string const& fallback_ ) const
     -> std::string
     {
         
@@ -264,7 +263,7 @@ namespace
         ( "Important: prints error & returns a fallback_ value" ) ,
     ]] auto
         Error::mt_str_errLog_or
-        ( const std::string& fallback_ ) const
+        ( std::string const& fallback_ ) const
     -> std::string
     {
         
@@ -279,14 +278,14 @@ namespace
     CLASS_CTOR ErrorCode::
         ErrorCode
             (
-                const long errCode_ ,
-                const e_ErrType errType_ ,
-                const std::string errWhat_ ,
-                const std::source_location errWhereCaller_ ,
-                const std::source_location errWhereOrigin_
+                long const errCode_ ,
+                e_ErrType const errType_ ,
+                std::string const kr_s_errWhat_ ,
+                std::source_location const k_sl_errWhereCaller_ ,
+                std::source_location const k_sl_errWhereOrigin_
             )
-        : Error ( errType_ , errWhat_ , errWhereCaller_ , errWhereOrigin_ )
-        , kpm_errCode_ ( std::move ( errCode_ ) )
+        : Error ( errType_ , kr_s_errWhat_ , k_sl_errWhereCaller_ , k_sl_errWhereOrigin_ )
+        , pmk_errCode_ ( std::move ( errCode_ ) )
     { }
     
     [[
@@ -302,7 +301,7 @@ namespace
         std::string_view _errLevel { };
         
         switch
-            ( kPm_errType )
+            ( Pmk_errType )
         {
             case
                 e_ErrType::Fatal:
@@ -324,7 +323,7 @@ namespace
             }
         }
         
-        const auto&
+        auto const&
             _errLog
             {
                 
@@ -349,16 +348,16 @@ namespace
                     "<-- [{1}]> }}"
                     , ""
                     , _errLevel
-                    , kpm_errCode_
-                    , kPm_errWhat_
-                    , kPm_errWhereCaller.line ( )
-                    , kPm_errWhereCaller.column ( )
-                    , kPm_errWhereCaller.file_name ( )
-                    , kPm_errWhereCaller.function_name ( )
-                    , kPm_errWhereOrigin.line ( )
-                    , kPm_errWhereOrigin.column ( )
-                    , kPm_errWhereOrigin.file_name ( )
-                    , kPm_errWhereOrigin.function_name ( )
+                    , pmk_errCode_
+                    , Pmk_errWhat
+                    , Pmk_errWhereCaller.line ( )
+                    , Pmk_errWhereCaller.column ( )
+                    , Pmk_errWhereCaller.file_name ( )
+                    , Pmk_errWhereCaller.function_name ( )
+                    , Pmk_errWhereOrigin.line ( )
+                    , Pmk_errWhereOrigin.column ( )
+                    , Pmk_errWhereOrigin.file_name ( )
+                    , Pmk_errWhereOrigin.function_name ( )
                 )
                 
             }
@@ -371,19 +370,19 @@ namespace
     constexpr ErrorCode::operator int
         ( void /* v_ */ ) const noexcept
     {
-        return static_cast <int> ( kpm_errCode_ );
+        return static_cast <int> ( pmk_errCode_ );
     }
     
     constexpr ErrorCode::operator long
         ( void /* v_ */ ) const noexcept
     {
-        return kpm_errCode_;
+        return pmk_errCode_;
     }
     
     constexpr ErrorCode::operator bool
         ( void /* v_ */ ) const noexcept
     {
-        return kpm_errCode_;
+        return pmk_errCode_;
     }
     
 }

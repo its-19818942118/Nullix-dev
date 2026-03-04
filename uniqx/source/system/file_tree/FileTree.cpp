@@ -66,19 +66,19 @@ namespace
         system::FileTree::source
         (
             [[maybe_unused]]
-            const std::optional<std::string_view> opt_ovr_
+            std::optional<std::string_view> const k_opt_ovr_
         )
     -> PathProxy
     {
         
         if
             (
-                // const std::fs::path& k_ref_fsp_src_ { opt_ovr_.value ( ) };
-                opt_ovr_.has_value ( )
+                // const std::fs::path& kr_fsp_src_ { k_opt_ovr_.value ( ) };
+                k_opt_ovr_.has_value ( )
             )
         {
             return
-                { *this , opt_ovr_.value( ) , opt_ovr_.value( ) }
+                { *this , k_opt_ovr_.value( ) , k_opt_ovr_.value( ) }
             ;
         }
         
@@ -115,9 +115,9 @@ namespace
     
     CLASS_CTOR
         system::FileTree::FileTree
-            ( const std::fs::path& k_ref_fsp_userHome_ )
-        : PM_fsp_actv_userHome ( k_ref_fsp_userHome_ )
-        , kPM_fsp_fctr_userHome ( k_ref_fsp_userHome_ )
+            ( std::fs::path const& kr_fsp_userHome_ )
+        : PM_fsp_actv_userHome ( kr_fsp_userHome_ )
+        , kPM_fsp_fctr_userHome ( kr_fsp_userHome_ )
     {
         
         this->sync_all ( );

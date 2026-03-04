@@ -38,45 +38,43 @@
                 
                 protected: virtual auto
                     mt_fsp_brightnessPath
-                    ( void ) const -> fs::path = 0
-                ;
+                    ( void /* v_ */ ) const
+                -> fs::path = 0;
                 
                 protected: virtual auto
                     mt_fsp_maxBrightnessPath
-                    ( void ) const -> fs::path = 0
-                ;
+                    ( void /* v_ */ ) const
+                -> fs::path = 0;
                 
-                protected: virtual auto
-                    mt_i64_readInt
-                    ( const fs::path& /* cst_fsp_ref_path_ */ ) const -> int64_t
-                ;
+                protected: virtual auto mt_i64_readInt
+                    ( fs::path const& /* kr_fsp_path_ */ ) const
+                -> int64_t;
                 
                 protected: virtual auto
                     mt_i64_writeInt
                     (
-                        const fs::path& /* cst_fsp_ref_path_ */ ,
+                        fs::path const& /* kr_fsp_path_ */ ,
                         int64_t /* i64_value_ */
                     ) -> void
                 ;
                 
-                public: virtual CLASS_DTOR
-                    ~Backlight
-                    ( void /* v_ */ ) = default
-                ;
+                public: virtual
+                    CLASS_DTOR ~Backlight
+                    ( void /* v_ */ )
+                = default;
                 
-                public: auto
-                    mtGet_brightness
-                    ( void /* v_ */ ) const -> PairInt64_t
-                ;
+                public: auto mtGet_brightness
+                    ( void /* v_ */ ) const
+                -> PairInt64_t;
                 
                 public: auto
                     mt_adjustBrightness
-                    ( const int64_t /* cst_i64_delta_ */ ) -> void
+                    ( int64_t const /* k_i64_delta_ */ ) -> void
                 ;
                 
                 public: auto
                     mt_adjustBrightnessPercent
-                    ( const int64_t /* cst_i64_delta_percent_ */ ) -> void
+                    ( int64_t const /* k_i64_delta_percent_ */ ) -> void
                 ;
                 
             }
@@ -87,18 +85,18 @@
                 
                 public: CLASS_CTOR
                     ScreenBacklight
-                    ( const fs::path& /* cst_fsp_ref_sysDevPath_ */ )
+                    ( fs::path const& /* kr_fsp_sysDevPath_ */ )
                 ;
                 
                 protected: auto
                     mt_fsp_brightnessPath
-                    ( void /* v_ */ ) const -> fs::path override
-                ;
+                    ( void /* v_ */ ) const
+                -> fs::path override;
                 
                 protected: auto
                     mt_fsp_maxBrightnessPath
-                    ( void /* v_ */ ) const -> fs::path override
-                ;
+                    ( void /* v_ */ ) const
+                -> fs::path override;
                 
             }
         ;
@@ -106,24 +104,23 @@
         class KeyboardBacklight : public Backlight
             {
                 
-                public: CLASS_CTOR
-                    KeyboardBacklight
-                    ( const fs::path& /* cst_fsp_ref_sysDevPath_ */ )
+                public: CLASS_CTOR KeyboardBacklight
+                    ( fs::path const& /* kr_fsp_sysDevPath_ */ )
                 ;
                 
                 protected: auto
                     mt_fsp_brightnessPath
-                    ( void /* v_ */ ) const -> fs::path override
-                ;
+                    ( void /* v_ */ ) const
+                -> fs::path override;
                 
                 protected: auto
                     mt_fsp_maxBrightnessPath
-                    ( void /* v_ */ ) const -> fs::path override
-                ;
+                    ( void /* v_ */ ) const
+                -> fs::path override;
                 
                 protected: auto
                     mt_adjustBrightnessPercent
-                    ( const int64_t /* cst_i64_delta_percent_ */ ) const
+                    ( int64_t const /* k_i64_delta_percent_ */ ) const
                 -> void = delete;
                 
             }
@@ -142,13 +139,12 @@
         {
             
             auto inline
-                Backlight::
-                mt_i64_readInt
-                ( const fs::path& cst_fsp_ref_path_ ) const
+                Backlight::mt_i64_readInt
+                ( fs::path const& kr_fsp_path_ ) const
             -> int64_t
             {
                 
-                std::ifstream _ifs_sysFile { cst_fsp_ref_path_ };
+                std::ifstream _ifs_sysFile { kr_fsp_path_ };
                 
                 if
                     ( !_ifs_sysFile )
@@ -158,7 +154,7 @@
                         std::runtime_error
                         (
                             "[Err]: Failed to open file " +
-                            cst_fsp_ref_path_.string ( )
+                            kr_fsp_path_.string ( )
                         )
                     ;
                     
@@ -175,11 +171,11 @@
             auto inline
                 Backlight::
                 mt_i64_writeInt
-                ( const fs::path& cst_fsp_ref_path_ , int64_t i64_value_ ) const
+                ( fs::path const& kr_fsp_path_ , int64_t i64_value_ ) const
             -> void
             {
                 
-                std::ofstream _ofs_sysFile { cst_fsp_ref_path_ };
+                std::ofstream _ofs_sysFile { kr_fsp_path_ };
                 
                 if
                     ( !_ofs_sysFile )
@@ -189,7 +185,7 @@
                         std::runtime_error
                         (
                             "[Err]: Failed to open file " +
-                            cst_fsp_ref_path_.string ( )
+                            kr_fsp_path_.string ( )
                         )
                     ;
                     
@@ -207,7 +203,7 @@
             {
                 
                 int64_t
-                    cst_i64_brightness
+                    k_i64_brightness
                     {
                         this->mt_i64_readInt
                         ( this->mt_fsp_brightnessPath ( ) )
@@ -215,39 +211,39 @@
                 ;
                 
                 int64_t
-                    cst_i64_maxBrightess
+                    k_i64_maxBrightess
                     {
                         this->mt_i64_readInt
                         ( this->mt_fsp_maxBrightnessPath ( ) )
                     }
                 ;
                 
-                return { cst_i64_brightness , cst_i64_maxBrightess };
+                return { k_i64_brightness , k_i64_maxBrightess };
                 
             }
             
             auto inline
                 Backlight::
                 mt_adjustBrightness
-                ( const int64_t cst_i64_delta_ ) const
+                ( int64_t const k_i64_delta_ ) const
             -> void
             {
                 
                 // structured binding not lamda function
-                const auto
-                    [ cst_i64_brightness , cst_i64_maxBrightess ]
+                auto const
+                    [ k_i64_brightness , k_i64_maxBrightess ]
                     {
                         this->mtGet_brightness ( )
                     }
                 ;
                 
-                const auto
-                    cst_i64_newBrightness
+                auto const
+                    k_i64_newBrightness
                     {
                         std::clamp
                         (
-                            ( cst_i64_brightness + cst_i64_delta_ ) , 0L ,
-                            cst_i64_maxBrightess
+                            ( k_i64_brightness + k_i64_delta_ ) , 0L ,
+                            k_i64_maxBrightess
                         )
                     }
                 ;
@@ -255,7 +251,7 @@
                 this->mt_i64_writeInt
                     (
                         this->mt_fsp_brightnessPath ( ) ,
-                        cst_i64_newBrightness
+                        k_i64_newBrightness
                     )
                 ;
                 
@@ -264,32 +260,32 @@
             auto inline
                 Backlight::
                 mt_adjustBrightnessPercent
-                ( const int64_t cst_i64_delta_percent_ ) const
+                ( int64_t const k_i64_delta_percent_ ) const
             -> void
             {
                 
-                const auto
-                    [ cst_i64_brightness , cst_i64_maxBrightness ]
+                auto const
+                    [ k_i64_brightness , k_i64_maxBrightness ]
                     {
                         this->mtGet_brightness ( )
                     }
                 ;
                 
-                // convert the raw cst_i64_brightness to percent %
+                // convert the raw k_i64_brightness to percent %
                 constexpr double cxp_percent { 100.0 };
-                const double
-                    cst_d_brightnessPercent
+                double const
+                    k_d_brightnessPercent
                     {
-                        static_cast <double> ( cst_i64_brightness ) *
-                        cxp_percent / cst_i64_maxBrightness
+                        static_cast <double> ( k_i64_brightness ) *
+                        cxp_percent / k_i64_maxBrightness
                     }
                 ;
                 
                 double
                     _d_deltaBrightnessPrecent
                     {
-                        cst_d_brightnessPercent +
-                        static_cast <double> ( cst_i64_delta_percent_ ) 
+                        k_d_brightnessPercent +
+                        static_cast <double> ( k_i64_delta_percent_ ) 
                     }
                 ;
                 
@@ -298,29 +294,29 @@
                     ( _d_deltaBrightnessPrecent , 0.0 , 100.0 )
                 ;
                 
-                const int64_t
-                    cst_i64_newBrightnessPercent
+                int64_t const
+                    k_i64_newBrightnessPercent
                     {
                         
                         static_cast <int64_t>
                         (
                             _d_deltaBrightnessPrecent *
-                            cst_i64_maxBrightness / 100.0 + 0.5
+                            k_i64_maxBrightness / 100.0 + 0.5
                         )
                         
                     }
                 ;
                 
-                this->mt_i64_writeInt ( this->mt_fsp_brightnessPath ( ) , cst_i64_newBrightnessPercent );
+                this->mt_i64_writeInt ( this->mt_fsp_brightnessPath ( ) , k_i64_newBrightnessPercent );
                 
             }
             
             CLASS_CTOR inline
                 ScreenBacklight::
                 ScreenBacklight
-                ( const fs::path& cst_fsp_ref_sysDevPath_ )
+                ( fs::path const& kr_fsp_sysDevPath_ )
             {
-                this->mut_fsp_Pm_devicePath = cst_fsp_ref_sysDevPath_;
+                this->mut_fsp_Pm_devicePath = kr_fsp_sysDevPath_;
             }
             
             auto inline
@@ -348,9 +344,9 @@
             CLASS_CTOR inline
                 KeyboardBacklight::
                 KeyboardBacklight
-                ( const fs::path& cst_fsp_ref_sysDevPath_ )
+                ( fs::path const& kr_fsp_sysDevPath_ )
             {
-                this->mut_fsp_Pm_devicePath = cst_fsp_ref_sysDevPath_;
+                this->mut_fsp_Pm_devicePath = kr_fsp_sysDevPath_;
             }
             
             auto inline

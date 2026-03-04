@@ -24,7 +24,7 @@ namespace [[
         /* nullAttr_ */
     ]] process::
         ProcPd::ProcPd
-            ( const int k_i_pd_ )
+            ( int const k_i_pd_ )
         : PMm_i_pd ( k_i_pd_ )
     { }
     
@@ -57,7 +57,7 @@ namespace [[
     
     auto process::
         ProcPd::operator >>=
-        ( const int i_targetPd_ ) const
+        ( int const i_targetPd_ ) const
         noexcept ( true )
     -> void
     {
@@ -87,7 +87,7 @@ namespace [[
     
     auto process::
         ProcPd::setNonBlock
-        ( const bool k_b_enabled_ ) const
+        ( bool const k_b_enabled_ ) const
         noexcept ( true )
     -> void
     {
@@ -111,7 +111,7 @@ namespace [[
     
     auto process::
         ProcPd::pollState
-        ( const int k_i_tmoutMS_ ) const
+        ( int const k_i_tmoutMS_ ) const
         noexcept ( true )
     -> PollStatus
     {
@@ -153,7 +153,7 @@ namespace [[
         
         if ( this->closed ( ) ) [[ unlikely ]] return false;
         
-        const PollStatus k_pst_state { this->pollState ( +0 ) };
+        PollStatus const k_pst_state { this->pollState ( +0 ) };
         
         if
             ( k_pst_state == _em_Closed ) [[ unlikely ]]
@@ -222,6 +222,7 @@ namespace [[
     {
         
         if ( this->closed ( ) ) return false;
+        if ( kr_str_resBufData_RX_.empty ( ) ) return false;
         
         if
             (

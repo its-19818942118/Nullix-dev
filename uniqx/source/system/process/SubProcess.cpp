@@ -1,4 +1,5 @@
 #include <print>
+#include <cstdio>
 #include <string>
 #include <vector>
 #include <fcntl.h>
@@ -22,25 +23,26 @@ namespace [[
     using namespace system::process;
     
     CLASS_CTOR
-        SubProcess::SubProcess
+        SubProcess::
+            SubProcess
             (
                 string_t const& kr_str_cmdName_ ,
                 vecStr_t const& kr_vecStr_argv_
             )
-        : PM_str_command ( kr_str_cmdName_ )
-        , mut_PM_vecStr_argv ( kr_vecStr_argv_ )
+        : PMm_str_command ( kr_str_cmdName_ )
+        , PMm_vecStr_argv ( kr_vecStr_argv_ )
     {
-        this->mut_PM_vecStr_argv.reserve
-            ( this->mut_PM_vecStr_argv.size ( ) + +32ZU )
+        this->PMm_vecStr_argv.reserve
+            ( this->PMm_vecStr_argv.size ( ) + +32ZU )
         ;
         
-        this->mut_PM_vecStr_argv.emplace_back ( kr_str_cmdName_ );
+        this->PMm_vecStr_argv.emplace_back ( kr_str_cmdName_ );
         
         std::rotate
             (
-                this->mut_PM_vecStr_argv.rbegin ( ) ,
-                this->mut_PM_vecStr_argv.rbegin ( ) + +1ZU ,
-                this->mut_PM_vecStr_argv.rend ( )
+                this->PMm_vecStr_argv.rbegin ( ) ,
+                this->PMm_vecStr_argv.rbegin ( ) + +1ZU ,
+                this->PMm_vecStr_argv.rend ( )
             )
         ;
         
@@ -99,9 +101,19 @@ namespace [[
             
             /* the child process transmits the data to us */
             
+            /// close write/transmit (TX) unused pipe else it will hang the pipe
+            _inPipeDes_TX.close ( );
+            
             /// close read/reciver (RX) unused pipes else it will hang the pipe
             _outPipeDes_RX.close ( );
             _errPipeDes_RX.close ( );
+            
+            if
+                ( ( pOpt_IO_ & opt_t::stdin ) )
+            {
+                /// Child process reads/recives (TX) data from stdin
+                _inPipeDes_RX >>= STDIN_FILENO;
+            }
             
             if
                 ( ( pOpt_IO_ & opt_t::stdout ) )
@@ -119,14 +131,14 @@ namespace [[
             
             auto const
                 k_zu_argvMax
-                { this->mut_PM_vecStr_argv.size ( ) + +3ZU }
+                { this->PMm_vecStr_argv.size ( ) + +3ZU }
             ;
             
             std::vector<char*> _args { };
             _args.reserve ( k_zu_argvMax );
             
             for
-                ( auto& arg_ : this->mut_PM_vecStr_argv )
+                ( auto& arg_ : this->PMm_vecStr_argv )
             {
                 _args.emplace_back ( arg_.data ( ) );
             }
@@ -142,11 +154,15 @@ namespace [[
         else
         {
             
+            // we are not reading any data. so close the reading(RX) ends
+            _inPipeDes_RX.close ( );
+            
             // we are not transmitting any data. so close the write(TX) ends
             _outPipeDes_TX.close ( );
             _errPipeDes_TX.close ( );
             
-            // set nonblocking to prevent freezing when reading large buffers
+            // set nonblocking to prevent freezing when RX/TX of large buffers
+            _inPipeDes_TX.setNonBlock ( true );
             _outPipeDes_RX.setNonBlock ( true );
             _errPipeDes_RX.setNonBlock ( true );
             
@@ -156,18 +172,46 @@ namespace [[
             string_t _str_errResData; _str_errResData.reserve ( K_zu_bufSize );
             
             while
-                ( !_outPipeDes_RX.closed ( ) || !_errPipeDes_RX.closed ( ) )
+                (
+                    (
+                        ( pOpt_IO_ & opt_t::stdin ) &&
+                        not _inPipeDes_TX.closed ( )
+                    ) ||
+                    (
+                        ( pOpt_IO_ & opt_t::stdout ) &&
+                        not _outPipeDes_RX.closed ( )
+                    ) ||
+                    (
+                        ( pOpt_IO_ & opt_t::stderr ) &&
+                        not _errPipeDes_RX.closed ( )
+                    )
+                )
             {
                 
-                _outPipeDes_RX >> _str_outResData;
+                [[maybe_unused]]
+                bool const k_b_inRx
+                    { _inPipeDes_TX << this->PMm_str_inputData }
+                ;
                 
-                _errPipeDes_RX >> _str_errResData;
+                [[maybe_unused]]
+                bool const k_b_outRx
+                    { _outPipeDes_RX >> _str_outResData }
+                ;
+                
+                [[maybe_unused]]
+                bool const k_b_errRx
+                    { _errPipeDes_RX >> _str_errResData }
+                ;
+                
+                //! TODO: Implement read/write failure logic !//
                 
             }
             
             int _i_status { };
             
             ::waitpid ( _pid , &_i_status , +0 );
+            
+            this->PMm_str_inputData.clear ( );
             
             return
                 {
@@ -181,13 +225,13 @@ namespace [[
                     {
                         not _str_outResData.empty ( )
                         ? std::move ( _str_outResData )
-                        : "???"
+                        : ""
                     } ,
                     ._stderr
                     {
                         not _str_errResData.empty ( )
                         ? std::move ( _str_errResData )
-                        : "???"
+                        : ""
                     }
                 }
             ;
@@ -216,61 +260,114 @@ namespace [[
         
     }
     
+    // auto SubProcess::printArgs
+    //     ( void /* v_ */ ) const
+    // -> void
+    // {
+        
+    //     if
+    //         ( this->PMmkp_sbp_prevCmd )
+    //     {
+            
+    //         this->PMmkp_sbp_prevCmd->printArgs ( );
+            
+    //         std::println ( stderr , "\n::[DEBUG]: Piped '|' to:\n" );
+            
+    //     }
+        
+    //     std::print ( stderr , "::[DEBUG BEGIN]: command = " );
+        
+    //     std::println ( stderr , "{:?}" , this->PMm_str_command );
+        
+    //     if
+    //         ( PMm_vecStr_argv.size ( ) < 2ZU )
+    //     {
+    //         std::println ( "{:>4}::[DEBUG]: No arguments passed!" , "" );
+    //     }
+        
+    //     for
+    //         ( size_t idx { 1ZU }; idx < PMm_vecStr_argv.size ( ); ++idx )
+    //     {
+            
+    //         std::println
+    //             (
+    //                 stderr ,
+    //                 "{:>4}::[DEBUG]: argv[{}] = {:?}"
+    //                 , "" , idx - ( +1ZU ) , this->PMm_vecStr_argv [ idx ]
+    //             )
+    //         ;
+            
+    //     }
+        
+    //     std::print ( stderr , "::[DEBUG END]: command = " );
+        
+    //     std::println ( stderr , "{:?}" , this->PMm_str_command );
+        
+    // }
+    
+    auto SubProcess::
+        mt_v_printRecursive
+        ( bool const is_first_caller ) const
+    -> void
+    {
+        if
+            ( this->PMmkp_sbp_prevCmd )
+        {
+            
+            this->PMmkp_sbp_prevCmd->mt_v_printRecursive ( !is_first_caller );
+            std::println ( stderr , "\n{:>12}| (stdout -> stdin)" , "" );
+            std::println ( stderr , "{:>12}v" , "" );
+            
+        }
+    
+        std::println ( stderr , "[Command]: {:?}" , this->PMm_str_command );
+        
+        if
+            ( this->PMm_vecStr_argv.size ( ) < 2ZU )
+        {
+            std::println
+                (
+                    stderr ,
+                    "{0:>4}+ arg[{1:}]: {0:?}"
+                    , "" , this->PMm_vecStr_argv.size ( ) - ( +1ZU )
+                )
+            ;
+            std::println ( "{:>4}- No arguments passed!" , "" );
+        }
+        
+        for
+            ( size_t idx { 1ZU }; idx < PMm_vecStr_argv.size ( ); ++idx )
+        {
+            
+            std::println
+                (
+                    stderr ,
+                    "{:>4}+ arg[{}]: {:?}"
+                    , "" , idx - ( +1ZU ) , this->PMm_vecStr_argv [ idx ]
+                )
+            ;
+        }
+        
+    }
+    
     auto SubProcess::printArgs
         ( void /* v_ */ ) const
     -> void
     {
         
-        std::println
-            (
-                stderr ,
-                "\nCommand: {:?}" ,
-                this->mut_PM_vecStr_argv.front ( )
-            )
-        ;
+        std::println ( stderr , "::[ DEBUG SESSION BEGIN ]::" );
         
-        std::print ( stderr , "Argv: " );
+        this->mt_v_printRecursive ( true );
         
-        for
-            (
-                size_t idx { +1ZU } ,
-                size = this->mut_PM_vecStr_argv.size ( );
-                idx < size; ++idx
-            )
-        {
-            
-            if ( idx == size - 1ZU )
-            {
-                
-                std::println
-                    (
-                        stderr ,
-                        "[ {:?} ]" ,
-                        this->mut_PM_vecStr_argv [ idx ]
-                    )
-                ;
-                
-            }
-            else
-            {
-                
-                std::print
-                    (
-                        stderr ,
-                        "[ {:?} ] " ,
-                        this->mut_PM_vecStr_argv [ idx ]
-                    )
-                ;
-                
-            }
-        }
+        std::println ( stderr , "::[ DEBUG SESSION END ]::" );
         
-        std::println ( );
+        std::println ( stderr );
+        std::println ( stderr , "{:=^80}" , "" );
         
     }
     
     auto SubProcess::capture
-        ( const opt_t opt_ ) const
+        ( opt_t const opt_ ) const
     -> SubProcess const&
     {
         if
@@ -279,7 +376,7 @@ namespace [[
             return ( *this );
         }
         
-        this->PM_pOpt_opt |= opt_;
+        this->PMm_pOpt_opt |= opt_;
         
         return ( *this );
     }
@@ -289,13 +386,13 @@ namespace [[
     -> int
     {
         
-        this->mut_PM_pRes_cmdResult =
-            this->SubProcess::mt_Res_execute ( this->PM_pOpt_opt )
+        this->PMm_pRes_cmdResult =
+            this->SubProcess::mt_Res_execute ( this->PMm_pOpt_opt )
         ;
         
         return
             (
-                this->mut_PM_pRes_cmdResult.exit_code ( )
+                this->PMm_pRes_cmdResult.exit_code ( )
             )
         ;
         
@@ -307,21 +404,21 @@ namespace [[
     {
         
         if
-            ( this->PM_str_command == kr_str_cmdName_ )
+            ( this->PMm_str_command == kr_str_cmdName_ )
         {
             return ( *this );
         }
         
-        this->PM_str_command = kr_str_cmdName_;
+        this->PMm_str_command = kr_str_cmdName_;
         
-        this->mut_PM_vecStr_argv.front ( ) = kr_str_cmdName_;
+        this->PMm_vecStr_argv.front ( ) = kr_str_cmdName_;
         
         return ( *this );
         
     }
     
     auto SubProcess::operator [ ]
-        ( const string_t& kr_str_argv_ ) const
+        ( string_t const& kr_str_argv_ ) const
     -> SubProcess const&
     {
         
@@ -332,18 +429,35 @@ namespace [[
                     {
                         std::find
                         (
-                            this->mut_PM_vecStr_argv.begin ( ) + 1ZU ,
-                            this->mut_PM_vecStr_argv.end ( ) ,
+                            this->PMm_vecStr_argv.begin ( ) + 1ZU ,
+                            this->PMm_vecStr_argv.end ( ) ,
                             kr_str_argv_
                         )
                     }
-                ; kr_aut_itr == this->mut_PM_vecStr_argv.end ( )
+                ; kr_aut_itr == this->PMm_vecStr_argv.end ( )
             )
         {
-            this->mut_PM_vecStr_argv.emplace_back ( kr_str_argv_ );
+            this->PMm_vecStr_argv.emplace_back ( kr_str_argv_ );
         }
         
         return ( *this );
+        
+    }
+    
+    auto SubProcess::operator |
+        ( SubProcess const& kr_sbp_next_ ) const
+    -> SubProcess const&
+    {
+        
+        kr_sbp_next_.PMmkp_sbp_prevCmd = this;
+        
+        this->capture ( opt_t::stdout ).run ( );
+        
+        kr_sbp_next_.capture ( opt_t::stdin );
+        
+        kr_sbp_next_.PMm_str_inputData = this->result ( ).stdOut ( );
+        
+        return kr_sbp_next_;
         
     }
     

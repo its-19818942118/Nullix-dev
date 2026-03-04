@@ -23,11 +23,11 @@
         auto
             Backlight::
             mt_i64_readInt
-            ( const fs::path& k_fsp_ref_path_ ) const
+            ( fs::path const& kr_fsp_path_ ) const
         -> int64_t
         {
             
-            std::ifstream _ifs_sysFile { k_fsp_ref_path_ };
+            std::ifstream _ifs_sysFile { kr_fsp_path_ };
             
             if
                 ( !_ifs_sysFile )
@@ -37,7 +37,7 @@
                     std::runtime_error
                     (
                         "[Err]: Failed to open file " +
-                        k_fsp_ref_path_.string ( )
+                        kr_fsp_path_.string ( )
                     )
                 ;
                 
@@ -54,11 +54,11 @@
         auto
             Backlight::
             mt_i64_writeInt
-            ( const fs::path& k_fsp_ref_path_ , int64_t i64_value_ )
+            ( fs::path const& kr_fsp_path_ , int64_t i64_value_ )
         -> void
         {
             
-            std::ofstream _ofs_sysFile { k_fsp_ref_path_ };
+            std::ofstream _ofs_sysFile { kr_fsp_path_ };
             
             if
                 ( !_ofs_sysFile )
@@ -68,7 +68,7 @@
                     std::runtime_error
                     (
                         "[Err]: Failed to open file " +
-                        k_fsp_ref_path_.string ( )
+                        kr_fsp_path_.string ( )
                     )
                 ;
                 
@@ -108,19 +108,19 @@
         auto
             Backlight::
             mt_adjustBrightness
-            ( const int64_t k_i64_delta_ )
+            ( int64_t const k_i64_delta_ )
         -> void
         {
             
             // structured binding not lamda function
-            const auto
+            auto const
                 [ k_i64_brightness , k_i64_maxBrightess ]
                 {
                     this->mtGet_brightness ( )
                 }
             ;
             
-            const auto
+            auto const
                 k_i64_newBrightness
                 {
                     std::clamp
@@ -143,11 +143,11 @@
         auto
             Backlight::
             mt_adjustBrightnessPercent
-            ( const int64_t k_i64_delta_percent_ )
+            ( int64_t const k_i64_delta_percent_ )
         -> void
         {
             
-            const auto
+            auto const
                 [ k_i64_brightness , k_i64_maxBrightness ]
                 {
                     this->mtGet_brightness ( )
@@ -157,7 +157,7 @@
             // convert the raw k_i64_brightness to percent %
             // constexpr double cxp_percent { 100.0 };
             constexpr double K_percent { +100.0 };
-            const double
+            double const
                 k_d_brightnessPercent
                 {
                     static_cast <double> ( k_i64_brightness ) *
@@ -179,7 +179,7 @@
                 ( _d_deltaBrightnessPrecent , +0.0 , +100.0 )
             ;
             
-            const int64_t
+            int64_t const
                 k_i64_newBrightnessPercent
                 {
                     
@@ -199,9 +199,9 @@
         CLASS_CTOR
             ScreenBacklight::
             ScreenBacklight
-            ( const fs::path& k_fsp_ref_sysDevPath_ )
+            ( fs::path const& kr_fsp_sysDevPath_ )
         {
-            this->mut_fsp_Pm_devicePath = k_fsp_ref_sysDevPath_;
+            this->mut_fsp_Pm_devicePath = kr_fsp_sysDevPath_;
         }
         
         auto
@@ -229,9 +229,9 @@
         CLASS_CTOR
             KeyboardBacklight::
             KeyboardBacklight
-            ( const fs::path& k_fsp_ref_sysDevPath_ )
+            ( fs::path const& kr_fsp_sysDevPath_ )
         {
-            this->mut_fsp_Pm_devicePath = k_fsp_ref_sysDevPath_;
+            this->mut_fsp_Pm_devicePath = kr_fsp_sysDevPath_;
         }
         
         auto

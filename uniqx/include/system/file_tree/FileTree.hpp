@@ -56,7 +56,7 @@
                 public: class PathProxy;
                 
                 private: std::fs::path PM_fsp_actv_userHome;
-                private: const std::fs::path kPM_fsp_fctr_userHome;
+                private: std::fs::path const kPM_fsp_fctr_userHome;
                 
                 /* permanent directory roots */
                 private: std::fs::path PM_fsp_usrCacheRoot;
@@ -90,7 +90,7 @@
                 
                 public: auto source
                     (
-                        const std::optional<std::string_view> /* opt_ovr_ */ =
+                        std::optional<std::string_view> const /* k_opt_ovr_ */ =
                         { std::nullopt }
                     )
                 -> PathProxy;
@@ -106,7 +106,7 @@
                 
                 public: explicit
                     CLASS_CTOR FileTree
-                    ( const std::fs::path& /* k_ref_fsp_userHome_ */ )
+                    ( std::fs::path const& /* kr_fsp_userHome_ */ )
                 ;
                 
             }

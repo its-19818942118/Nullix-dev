@@ -23,12 +23,12 @@ namespace
         ( "Important: returns k_username" )
     ]] auto
         Host::_mtGet_str_userName
-        ( const std::src_loc k_sl_srcLoc_ )
+        ( std::src_loc const k_sl_srcLoc_ )
     -> std::expected <std::string , Err_t_>
     {
         
         if
-            ( const auto& k_username = std::getenv ( "USER" ) )
+            ( auto const& k_username = std::getenv ( "USER" ) )
             [[likely]]
         {
             return { k_username };
@@ -60,12 +60,12 @@ namespace
         ( "Important: returns k_hostname" )
     ]] auto
         Host::_mtGet_str_hostName
-        ( const std::src_loc k_sl_srcLoc_ )
+        ( std::src_loc const k_sl_srcLoc_ )
     -> std::expected <std::string, Err_t_>
     {
         
         if
-            ( const auto& k_hostname = unistd::gethostname ( ) )
+            ( auto const& k_hostname = unistd::gethostname ( ) )
         {
             
             return { *k_hostname };
@@ -101,7 +101,7 @@ namespace
     {
         
         if
-            ( kpm_str_userName.empty ( ) && kpm_str_hostName.empty ( ) )
+            ( pmk_str_userName.empty ( ) && pmk_str_hostName.empty ( ) )
         {
             
             return
@@ -124,8 +124,8 @@ namespace
                 std::format
                 (
                     "{}@{}"
-                    , this->kpm_str_userName
-                    , this->kpm_str_hostName
+                    , this->pmk_str_userName
+                    , this->pmk_str_hostName
                 )
             }
         ;
@@ -139,12 +139,12 @@ namespace
     {
         
         if
-            ( const auto& _userHome { std::getenv ( "HOME" ) } )
+            ( auto const& _userHome { std::getenv ( "HOME" ) } )
         {
             return { _userHome };
         }
         
-        const auto&
+        auto const&
             _user
             {
                 Host::_mtGet_str_userName ( ).error ( ).mt_str_errLog_or
@@ -152,7 +152,7 @@ namespace
             }
         ;
         
-        const auto& _fallback { std::fs::path { "/home" } / _user };
+        auto const& _fallback { std::fs::path { "/home" } / _user };
         
         return
             {
@@ -166,7 +166,7 @@ namespace
     CLASS_CTOR
         Host::Host
         ( void /* v_ */ )
-        : kpm_str_userName
+        : pmk_str_userName
         (
             [ username { this->_mtGet_str_userName ( ) } ]
             {
@@ -182,7 +182,7 @@ namespace
                 
             } ( )
         )
-        , kpm_str_hostName
+        , pmk_str_hostName
         (
             [ hostname { this->_mtGet_str_hostName ( ) } ]
             {
@@ -203,8 +203,8 @@ namespace
     
     CLASS_CTOR
         Host::Host
-        ( const std::fs::path& k_ref_fsp_userHome_ )
-        : kpm_str_userName
+        ( std::fs::path const& kr_fsp_userHome_ )
+        : pmk_str_userName
         (
             [ username { this->_mtGet_str_userName ( ) } ]
             {
@@ -220,7 +220,7 @@ namespace
                 
             } ( )
         )
-        , kpm_str_hostName
+        , pmk_str_hostName
         (
             [ hostname { this->_mtGet_str_hostName ( ) } ]
             {
@@ -236,7 +236,7 @@ namespace
                 
             } ( )
         )
-        , dirs ( k_ref_fsp_userHome_ )
+        , dirs ( kr_fsp_userHome_ )
     { }
     
     Host::~Host ( ) = default;

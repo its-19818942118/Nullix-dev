@@ -31,20 +31,18 @@
     {
         
         auto
-          inline
-            null_
-            ( void )
+            inline null_
+            ( void /* v_ */ )
         ;
         
         auto
-          inline
-            annotate_
-            ( const char* )
+          inline annotate_
+            ( char const* )
         -> void;
         
         auto inline
             documentation_
-            ( const char* )
+            ( char const* )
         -> void;
         
     }

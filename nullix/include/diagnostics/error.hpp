@@ -32,15 +32,15 @@
                     public: explicit
                         CLASS_CTOR Error
                         (
-                            const std::string& /* errWhat_ */ ,
-                            const std::source_location& /* errWhere_ */
+                            std::string const& /* kr_str_errWhat_ */ ,
+                            std::source_location const& /* kr_sl_errWhere_ */
                         )
                     ;
                     
                     constexpr auto
                         mt_str_value_or_log
-                        ( const std::string& /* fallback_ */ ) const -> std::string
-                    ;
+                        ( std::string const& /* kr_s_fallback_ */ ) const
+                    -> std::string;
                     
                 }
             ;
@@ -60,16 +60,16 @@
                     public: explicit
                         CLASS_CTOR ErrorInt
                         (
-                            const long& /* errCode_ */ ,
-                            const std::string& /* errWhat_ */ ,
-                            const std::source_location& /* errWhere_ */
+                            long const /* k_errCode_ */ ,
+                            std::string const& /* kr_str_errWhat_ */ ,
+                            std::source_location const& /* kr_sl_errWhere_ */
                         )
                     ;
                     
                     public: constexpr auto
                         mt_str_value_or_log
-                        ( const std::string& fallback_ ) const -> std::string
-                    ;
+                        ( std::string const& fallback_ ) const
+                    -> std::string;
                     
                 }
             ;
@@ -81,11 +81,10 @@
     {
         
         [[
-            nodiscard ( "Important: returns sanitized errWhat_" )
-        ]] auto
-            sanErr
-            ( std::string_view errWhatRaw_ ) -> std::string
-        ;
+            nodiscard ( "Important: returns sanitized kr_str_errWhat_" )
+        ]] auto sanErr
+            ( std::string_view errWhatRaw_ )
+        -> std::string;
         
     } /* namespace nullix::err::v2::detail */
     
@@ -108,15 +107,15 @@
                 ;
                 
                 /* The error type like e_ErrType::Fatal */
-                protected: const e_ErrType kPm_errType { };
+                protected: e_ErrType const Pmk_errType { };
                 /* The error reason variable to store the error reason */
-                protected: const std::string kPm_errWhat { };
+                protected: std::string const Pmk_errWhat { };
                 /* The formatted error reason variable sanitized */
-                protected: const std::string kPm_errWhat_ { };
+                protected: std::string const Pmkr_str_errWhat_ { };
                 /* The variable to store callsite error */
-                protected: const std::source_location kPm_errWhereCaller { };
+                protected: std::source_location const Pmk_errWhereCaller { };
                 /* The variable to store function that made the error */
-                protected: const std::source_location kPm_errWhereOrigin { };
+                protected: std::source_location const Pmk_errWhereOrigin { };
                 
                 // not marking all these `public:` (i forgot to) costed me 2hrs
                 // of debugging. always set accessor explicitly
@@ -124,7 +123,7 @@
                     Error ( Error&& ) = default
                 ;
                 public: CLASS_CTOR
-                    Error ( const Error& ) = default
+                    Error ( Error const& ) = default
                 ;
                 
                 public: auto
@@ -133,17 +132,17 @@
                 -> Error& = delete ( "disable mv/cp" );
                 public: auto
                     operator =
-                    ( const Error& )
+                    ( Error const& )
                 -> Error& = delete ( "disable mv/cp" );
                 
                 /* The constructor to initialize the values */
                 public: explicit
                     CLASS_CTOR Error
                     (
-                        const e_ErrType /* errType_ */ ,
-                        const std::string /* errWhat_ */ ,
-                        const std::source_location /* errWhereCaller_ */ ,
-                        const std::source_location /* errWhereOrigin_ */ =
+                        e_ErrType const /* errType_ */ ,
+                        std::string const /* kr_str_errWhat_ */ ,
+                        std::source_location const /* k_sl_errWhereCaller_ */ ,
+                        std::source_location const /* k_sl_errWhereOrigin_ */ =
                         { std::source_location::current ( ) }
                     )
                 ;
@@ -152,22 +151,22 @@
                     ( "Important: returns a formatted log string" )
                 ]] virtual auto
                     mt_str_errLog
-                    ( void /* v_ */ ) const -> std::string
-                ;
+                    ( void /* v_ */ ) const
+                -> std::string;
                 
                 public: [[ nodiscard
                     ( "Important: returns a fallback_ value" ) ,
                 ]] auto
                     mt_str_fallback
-                    ( const std::string& fallback_ ) const -> std::string
-                ;
+                    ( std::string const& fallback_ ) const
+                -> std::string;
                 
                 public: [[ nodiscard
                     ( "Important: prints error & returns a fallback_ value" ) ,
                 ]] auto
                     mt_str_errLog_or
-                    ( const std::string& fallback_ ) const -> std::string
-                ;
+                    ( std::string const& fallback_ ) const
+                -> std::string;
                 
                 // will implment later
                 virtual CLASS_DTOR ~Error ( );
@@ -181,16 +180,16 @@
             {
                 
                 // use long to satisfy compiler's (-Wpadded) warnings
-                const long kpm_errCode_ { };
+                long const pmk_errCode_ { };
                 
                 public: explicit
                     CLASS_CTOR ErrorCode
                     (
-                        const long /* errCode_ */ ,
-                        const e_ErrType /* errType_ */ ,
-                        const std::string /* errWhat_ */ ,
-                        const std::source_location /* errWhereCaller_ */ ,
-                        const std::source_location /* errWhereOrigin_ */ =
+                        long const /* errCode_ */ ,
+                        e_ErrType const /* errType_ */ ,
+                        std::string const /* kr_str_errWhat_ */ ,
+                        std::source_location const /* k_sl_errWhereCaller_ */ ,
+                        std::source_location const /* k_sl_errWhereOrigin_ */ =
                         { std::source_location::current ( ) }
                     )
                 ;
@@ -201,21 +200,20 @@
                     mt_str_errLog
                     ( void /* v_ */ ) const
                 -> std::string override;
+                public: constexpr
+                    explicit operator int
+                    ( void /* v_ */ ) const
+                noexcept ( true );
                 
-                public: explicit
-                    constexpr operator int
-                    ( void /* v_ */ ) const noexcept
-                ;
+                public: constexpr
+                    explicit operator long
+                    ( void /* v_ */ ) const
+                noexcept ( true );
                 
-                public: explicit
-                    constexpr operator long
-                    ( void /* v_ */ ) const noexcept
-                ;
-                
-                public: explicit
-                    constexpr operator bool
-                    ( void /* v_ */ ) const noexcept
-                ;
+                public: constexpr
+                    explicit operator bool
+                    ( void /* v_ */ ) const
+                noexcept ( true );
                 
             }
         ;

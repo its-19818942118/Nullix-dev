@@ -53,14 +53,14 @@
                 public: static ProcStream const global;
                 public: static ProcStream const empty;
                 
-                private: explicit constexpr
+                private: constexpr explicit
                     STRUCT_CTOR ProcStream
                         ( PM_e_Details_ bits_ )
                         noexcept ( true )
                     : PMm_Typ_bits ( static_cast<Type_t_> ( bits_ ) )
                 { }
                 
-                private: explicit constexpr
+                private: constexpr explicit
                     STRUCT_CTOR ProcStream
                         ( Type_t_ Typ_bits_ )
                         noexcept ( true )
@@ -75,33 +75,40 @@
                 public: [[
                     nodiscard ( "Returns bool checked opt_ bit." )
                 ]] auto _has
-                    ( const ProcStream /* k_psr_other_ */ ) const
+                    ( ProcStream const /* k_psr_other_ */ ) const
                     noexcept ( true )
                 -> bool;
                 
-                auto constexpr _count() const noexcept -> int {
+                constexpr auto _count
+                    ( void /* v_ */ ) const
+                    noexcept ( true )
+                -> int
+                {
                     // The "Built-in" way to count set bits
-                    return __builtin_popcount ( static_cast<unsigned int>(this->PMm_Typ_bits) );
+                    return
+                        __builtin_popcount
+                        ( static_cast<unsigned int> ( this->PMm_Typ_bits ) )
+                    ;
                 }
                 
                 public: [[
                     nodiscard ( "Operator | for bit comparison" )
                 ]] auto operator |
-                    ( const ProcStream /* k_prs_rhs_ */ ) const
+                    ( ProcStream const /* k_prs_rhs_ */ ) const
                     noexcept ( true )
                 -> ProcStream;
                 
                 public: [[
                     nodiscard ( "Operator & for bit comparison" )
                 ]] auto operator &
-                    ( const ProcStream /* k_prs_rhs_ */ ) const
+                    ( ProcStream const /* k_prs_rhs_ */ ) const
                     noexcept ( true )
                 -> bool;
                 
                 public: [[
                     // nodiscard ( "Operator |= for bitor assignment" )
                 ]] auto operator |=
-                    ( const ProcStream /* k_prs_rhs_ */ ) const
+                    ( ProcStream const /* k_prs_rhs_ */ ) const
                     noexcept ( true )
                 -> ProcStream&;
                 
@@ -109,7 +116,7 @@
                     nodiscard ( "Operator != for comparison." )
                 ]] auto
                     operator !=
-                    ( const PM_e_Details_ /* k_rhs_ */ ) const
+                    ( PM_e_Details_ const /* k_rhs_ */ ) const
                     noexcept ( true )
                 -> bool;
                 

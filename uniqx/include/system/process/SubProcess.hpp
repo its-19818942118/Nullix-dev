@@ -31,32 +31,37 @@
                 private: using string_t = std::string;
                 private: using vecStr_t = std::vector<std::string>;
                 
-                private: mutable opt_t PM_pOpt_opt;
-                private: mutable string_t PM_str_command;
-                private: mutable string_t PM_str_inputData;
-                private: mutable vecStr_t mut_PM_vecStr_argv;
-                private: mutable ProcResult mut_PM_pRes_cmdResult;
+                private: mutable opt_t PMm_pOpt_opt;
+                private: mutable string_t PMm_str_command;
+                private: mutable vecStr_t PMm_vecStr_argv;
+                private: mutable string_t PMm_str_inputData;
+                private: mutable ProcResult PMm_pRes_cmdResult;
+                private: mutable SubProcess const* PMmkp_sbp_prevCmd { };
                 
                 /// Class Constructor
                 public: explicit CLASS_CTOR SubProcess
                     (
-                        const string_t& /* kr_str_binName_ */ ,
-                        const vecStr_t& /* kr_vecStr_argv_ */
+                        string_t const& /* kr_str_binName_ */ ,
+                        vecStr_t const& /* kr_vecStr_argv_ */
                     )
                 ;
                 
                 /// Execution engine
                 private: auto mt_Res_execute
-                    ( const opt_t /* pOpt_IO_ */ = opt_t::status ) const
+                    ( opt_t const /* pOpt_IO_ */ = opt_t::status ) const
                 -> Result_t;
                 
                 public: auto
                     static create
                     (
-                        const string_t& /* kr_str_binName_ */ ,
-                        const vecStr_t& /* kr_vecStr_argv_ */ = { }
+                        string_t const& /* kr_str_binName_ */ ,
+                        vecStr_t const& /* kr_vecStr_argv_ */ = { }
                     )
                 -> SubProcess;
+                
+                private: auto mt_v_printRecursive
+                    ( bool const ) const
+                -> void;
                 
                 public: auto printArgs
                     ( void /* v_ */ ) const
@@ -67,24 +72,27 @@
                 -> int;
                 
                 public: auto capture
-                    ( const opt_t opt_ ) const
-                -> const SubProcess&;
+                    ( opt_t const opt_ ) const
+                -> SubProcess const&;
                 
                 public: inline auto result
                     ( void /* v_ */ ) const
-                -> const Result_t&
+                -> Result_t const&
                 {
-                    return this->mut_PM_pRes_cmdResult;
+                    return this->PMm_pRes_cmdResult;
                 }
                 
                 public: auto operator ( )
-                    ( const string_t& /* kr_str_argv_ */ ) const
-                -> const SubProcess&;
+                    ( string_t const& /* kr_str_argv_ */ ) const
+                -> SubProcess const&;
                 
                 public: auto operator [ ]
-                    ( const string_t& /* kr_str_argv_ */ ) const
-                -> const SubProcess&;
+                    ( string_t const& /* kr_str_argv_ */ ) const
+                -> SubProcess const&;
                 
+                public: auto operator |
+                    ( SubProcess const& /* kr_sbp_next_ */ ) const
+                -> SubProcess const&;
                 
             }
         ;
