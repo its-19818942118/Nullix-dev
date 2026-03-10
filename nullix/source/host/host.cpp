@@ -147,8 +147,8 @@ namespace
         auto const&
             _user
             {
-                Host::_mtGet_str_userName ( ).error ( ).mt_str_errLog_or
-                ( "unknown_nullixUser" )
+                Host::_mtGet_str_userName ( ).error
+                ( ).mt_str_errLog_or ( "unknown_nullixUser" )
             }
         ;
         
@@ -173,8 +173,8 @@ namespace
             {
                 this->_mtGet_str_userName ( )
                 ? *this->_mtGet_str_userName ( )
-                : this->_mtGet_str_userName ( ).error ( ).mt_str_errLog_or
-                ( "unknown-user" )
+                : this->_mtGet_str_userName ( ).error
+                ( ).mt_str_errLog_or ( "unknown-user" )
             }
         ;
         
@@ -190,8 +190,8 @@ namespace
             {
                 this->_mtGet_str_hostName ( )
                 ? *this->_mtGet_str_hostName ( )
-                : this->_mtGet_str_hostName ( ).error ( ).mt_str_errLog_or
-                ( "unknown-host" )
+                : this->_mtGet_str_hostName ( ).error
+                ( ).mt_str_errLog_or ( "unknown-host" )
             }
         ;
         
