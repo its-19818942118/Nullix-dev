@@ -61,7 +61,7 @@
     
     DIAGNOSTICS_PUSH
     DIAGNOSTICS_IGNORE ( "-Weverything" )
-        #pragma GCC poison _
+        // #pragma GCC poison _
         #pragma GCC poison POP_
         #pragma GCC poison PUSH_
         #pragma GCC poison ERROR_

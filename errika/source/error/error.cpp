@@ -13,92 +13,7 @@
 #include "error/error.hpp"
 
 namespace
-    errika::error::v1
-{
-    
-    CLASS_CTOR [[
-        deprecated
-        ( "Please use `errika::error::v2::Error` instead" )
-    ]] Error::
-            Error
-            (
-                std::string const& kr_s_errWhat_ ,
-                std::source_location const& kr_sl_errWhere_ =
-                { std::source_location::current ( ) }
-            )
-        : _errWhat ( kr_s_errWhat_ )
-        , _errWhere ( kr_sl_errWhere_ )
-    { }
-    
-    constexpr auto
-        Error::mt_str_value_or_log
-        ( std::string const& fallback_ ) const
-    -> std::string
-    {
-        
-        std::println
-            (
-                stderr ,
-                "<[ERR.FATAL]: "
-                "On function \x1b[1;4m`{4}`\x1b[0m ,\n"
-                "  <<[source.location.file]: "
-                "\x1b[3;4m'{3}'\x1b[0m\n"
-                "  <<[source.location.line]: '{1}:{2}'\n"
-                "  <<<[Reason]: {0}"
-                , _errWhat
-                , _errWhere.line ( )
-                , _errWhere.column ( )
-                , _errWhere.file_name ( )
-                , _errWhere.function_name ( )
-            )
-        ;
-        
-        return { fallback_ };
-        
-    }
-    
-    CLASS_CTOR [[
-        deprecated
-        ( "Please use `errika::error::v2::ErrorCode` instead" )
-    ]] ErrorInt::
-            ErrorInt
-            (
-                long const k_l_errCode_ ,
-                std::string const& kr_s_errWhat_ ,
-                std::source_location const& kr_sl_errWhere_ =
-                { std::source_location::current ( ) }
-            )
-        : Error ( kr_s_errWhat_ , kr_sl_errWhere_ )
-        , _errCode ( k_l_errCode_ )
-    { }
-    
-    constexpr auto
-        ErrorInt::mt_str_value_or_log
-        ( std::string const& fallback_ ) const
-    -> std::string
-    {
-        
-        std::println
-            (
-                stderr ,
-                "<[ERR]: on ({4} {2}:{3})\n"
-                "  <<[Reason]: {1}\n"
-                "   <<[Hint.err.code]: {0}"
-                , _errCode , _errWhat
-                , _errWhere.line ( )
-                , _errWhere.column ( )
-                , _errWhere.file_name ( )
-            )
-        ;
-        
-        return { fallback_ };
-        
-    }
-    
-} /* errika::error::v1 */
-
-namespace
-    errika::error::v2::detail
+    errika::error::detail
 {
     
     [[
@@ -118,22 +33,21 @@ namespace
         using namespace std::literals;
         
         std::string _result { };
-        _result.reserve ( errWhatRaw_.size ( ) + +64 );
+        _result.reserve ( errWhatRaw_.size ( ) + ( +64 ) );
         
         for
             (
-                std::size_t _col { 0xF };
+                std::size_t _col { +15 };
                 auto const& c : errWhatRaw_
             ) [[likely]]
         {
             if
                 (
                     ( c == '\n' ) ||
-                    ( _col >= 70 && c == ' ' ) ||
-                    ( _col >= 80 )
+                    ( _col >= +70 && c == ' ' ) || ( _col >= +80 )
                 ) [[likely]]
             {
-                _col = 0xF;
+                _col = +15;
                 _result.append ( "\n        #>> " );
                 if ( c == '\n' ) continue;
             }
@@ -149,7 +63,7 @@ namespace
 } /* namespace errika::error::v2::detail */
 
 namespace
-    errika::error::v2
+    errika::error
 {
     
     CLASS_CTOR

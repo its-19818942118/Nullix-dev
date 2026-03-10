@@ -41,7 +41,7 @@ namespace [[
     -> uniqx::fs::Path
     {
         
-        return { this->parent_path ( ) };
+        return { std::move ( this->parent_path ( ) ) };
         
     }
     
@@ -58,7 +58,7 @@ namespace [[
         std::error_code _ec_errCode { };
         
         if
-            ( !std::fs::exists ( *this , _ec_errCode ) || _ec_errCode )
+            ( !std::fs::exists ( std::move ( *this ) , _ec_errCode ) || _ec_errCode )
         {
             
             return
@@ -93,7 +93,7 @@ namespace [[
                 )
             ;
             
-            return ( *this );
+            return ( std::move ( *this ) );
             
         }
         
@@ -144,11 +144,11 @@ namespace [[
         ;
         
         if
-            ( std::fs::is_directory ( *this , _ec_errCode ) )
+            ( std::fs::is_directory ( std::move ( *this ) , _ec_errCode ) )
         {
             
             std::fs::create_directory_symlink
-                ( *this , _fsp_tmpLink , _ec_errCode )
+                ( std::move ( *this ) , _fsp_tmpLink , _ec_errCode )
             ;
             
         }
@@ -157,7 +157,7 @@ namespace [[
         {
             
             std::fs::create_symlink
-                ( *this , _fsp_tmpLink , _ec_errCode )
+                ( std::move ( *this ) , _fsp_tmpLink , _ec_errCode )
             ;
             
         }
@@ -221,7 +221,7 @@ namespace [[
             )
         ;
         
-        return ( *this );
+        return ( std::move ( *this ) );
         
     }
     
@@ -236,7 +236,7 @@ namespace [[
         
         std::error_code _ec_errCode { };
         
-        auto const k_b_isSLink { std::fs::exists ( *this , _ec_errCode ) };
+        auto const k_b_isSLink { std::fs::exists ( std::move ( *this ) , _ec_errCode ) };
         
         if
             ( _ec_errCode )
@@ -271,14 +271,14 @@ namespace [[
                 )
             ;
             
-            return ( *this );
+            return ( std::move ( *this ) );
             
         }
         
         _ec_errCode.clear ( );
         
         if
-            ( !std::fs::remove ( *this , _ec_errCode ) || _ec_errCode )
+            ( !std::fs::remove ( std::move ( *this ) , _ec_errCode ) || _ec_errCode )
         {
             
             return
@@ -305,7 +305,7 @@ namespace [[
             )
         ;
         
-        return ( *this );
+        return ( std::move ( *this ) );
         
     }
     
@@ -474,7 +474,7 @@ namespace [[
             )
         ;
         
-        return ( *this );
+        return ( std::move ( *this ) );
         
     }
     
@@ -485,7 +485,7 @@ namespace [[
     -> uniqx::fs::Path
     {
         
-        Path _ufP_presentPath { std::move ( *this ) };
+        Path _ufP_presentPath { std::move ( std::move ( *this ) ) };
         
         _ufP_presentPath /= std::move ( kr_fsp_subDir_ );
         
@@ -500,7 +500,7 @@ namespace [[
     // -> uniqx::fs::Path
     // {
         
-    //     Path _ufP_presentPath { *this };
+    //     Path _ufP_presentPath { std::move ( *this ) };
         
     //     _ufP_presentPath /= kr_ufP_subDir_.native ( );
         
@@ -515,7 +515,7 @@ namespace [[
     // -> uniqx::fs::Path
     // {
         
-    //     Path _ufP_presentPath { *this };
+    //     Path _ufP_presentPath { std::move ( *this ) };
         
     //     _ufP_presentPath /= Sv_subDir_;
         

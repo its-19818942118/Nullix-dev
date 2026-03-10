@@ -1,11 +1,10 @@
 #ifndef NULLIX_HPP_NULLIX_
     #define NULLIX_HPP_NULLIX_
     
-    #include <array>
-    #include <string>
-    #include <optional>
+    /* IWYU pragma: begin_exports */
     #include <filesystem>
     #include <source_location>
+    /* IWYU pragma: end_exports */
     
     /* NULL Ctor Types */
     #define Null_Ctor_
@@ -29,48 +28,6 @@
     } /* namespace std */
     
     namespace
-        nullix::err
-    {
-        
-        namespace [[
-            deprecated
-            ( "Please use namespace `nullix::err::v2` instead" )
-        ]] v1
-        {
-            
-            struct [[
-                deprecated
-                ( "Please use `nullix::err::v2::Error` instead" )
-            ]] Error;
-            
-            struct [[
-                deprecated
-                ( "Please use `nullix::err::v2::ErrorCode` instead" )
-            ]] ErrorInt;
-            
-        } /* namespace v1 */
-        
-    } /* namespace nullix::err */
-    
-    namespace
-        nullix::err
-    {
-        
-        namespace
-            v2
-        {
-            
-            class Error;
-            class ErrorCode;
-            
-            using Err_t_ = Error;
-            using ErrCode_t_ = ErrorCode;
-            
-        } /* namespace v2 */
-        
-    } /* namespace nullix::err */
-    
-    namespace
         nullix
     {
         
@@ -79,13 +36,8 @@
         /* host class for user environment related functionality */
         class Host;
         
-        /* type aliases for Error types */
-        using Err_t_ = err::v2::Error;
-        using ErrInt_t_ = err::v2::ErrorCode;
-        
     } /* namespace nullix */
     
-    ///> deprecated
     /*************************************************************************!
     @brief: Prevents circular dependencies.
     @details Define this macro to get only forward declared symbols of nullix ,
@@ -102,9 +54,10 @@
     * ```
     !*************************************************************************/
     #if !defined(ONLY_FORWARD_SYMBOL_DECLS_NULLIX_)
+    # /* IWYU pragma: begin_exports */
     #   include "host/host.hpp"
-    #   include "diagnostics/error.hpp"
     #   include "diagnostics/Diagnostics.hpp"
+    # /* IWYU pragma: end_exports */
     #endif /* ONLY_FORWARD_SYMBOL_DECLS_NULLIX_ */
     
 #endif /* NULLIX_HPP_NULLIX_ */

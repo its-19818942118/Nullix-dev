@@ -13,71 +13,7 @@
     #undef ONLY_FORWARD_SYMBOL_DECLS_ERRIKA_
     
     namespace
-        errika::error
-    {
-        namespace [[
-            deprecated
-            ( "Please use `errika::error::v2` instead" )
-        ]] v1
-        {
-            struct [[
-                deprecated
-                ( "Please use `errika::error::v2::Error` instead" )
-            ]] Error
-                {
-                    
-                    public: std::string _errWhat { };
-                    public: std::source_location _errWhere { };
-                    
-                    public: explicit
-                        CLASS_CTOR Error
-                        (
-                            std::string const& /* kr_str_errWhat_ */ ,
-                            std::source_location const& /* kr_sl_errWhere_ */
-                        )
-                    ;
-                    
-                    constexpr auto
-                        mt_str_value_or_log
-                        ( std::string const& /* kr_s_fallback_ */ ) const
-                    -> std::string;
-                    
-                }
-            ;
-            
-            struct
-            [[
-                deprecated
-                ( "Please use `errika::error::v2::ErrorCode` instead" )
-            ]]
-            ErrorInt :
-                public Error
-                {
-                    // using `long` here to satisfy
-                    // the compiler's (-Wpadded) warnings
-                    public: long _errCode { };
-                    
-                    public: explicit
-                        CLASS_CTOR ErrorInt
-                        (
-                            long const /* k_errCode_ */ ,
-                            std::string const& /* kr_str_errWhat_ */ ,
-                            std::source_location const& /* kr_sl_errWhere_ */
-                        )
-                    ;
-                    
-                    public: constexpr auto
-                        mt_str_value_or_log
-                        ( std::string const& fallback_ ) const
-                    -> std::string;
-                    
-                }
-            ;
-        }
-    }
-    
-    namespace
-        errika::error::v2::detail
+        errika::error::detail
     {
         
         [[
@@ -89,7 +25,7 @@
     } /* namespace errika::error::v2::detail */
     
     namespace
-        errika::error::v2
+        errika::error
     {
         
         class

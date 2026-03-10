@@ -11,45 +11,14 @@
         using src_loc = ::std::source_location;
     } /* namespace std */
     
-    namespace
-        errika::error
-    {
-        
-        namespace [[
-                deprecated
-                ( "Please use namespace `errika::v2` instead" )
-            ]] v1
-        {
-            
-            struct [[
-                deprecated
-                ( "Please use `errika::v2::Error` instead" )
-            ]] Error;
-            
-            struct [[
-                deprecated
-                ( "Please use `errika::v2::ErrorCode` instead" )
-            ]] ErrorInt;
-            
-        } /* namespace v1 */
-        
-    } /* namespace errika */
-    
     namespace errika::error
     {
         
-        namespace [[
-                /* nullAttr_ */
-            ]] v2
-        {
-            
-            class Error;
-            class ErrorCode;
-            
-            using Err_t_ = Error;
-            using ErrCode_t_ = ErrorCode;
-            
-        } /* namespace v2 */
+        class Error;
+        class ErrorCode;
+        
+        using Err_t_ = Error;
+        using ErrCode_t_ = ErrorCode;
         
     } /* namespace errika */
     
@@ -59,8 +28,8 @@
     {
         
         /* type aliases for Error types */
-        using Err_t_ = error::v2::Err_t_;
-        using ErrInt_t_ = error::v2::ErrCode_t_;
+        using Err_t_ = error::Err_t_;
+        using ErrInt_t_ = error::ErrCode_t_;
         
     } /* namespace errika */
     
