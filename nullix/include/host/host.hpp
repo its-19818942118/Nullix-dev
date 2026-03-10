@@ -18,7 +18,8 @@
     #
     #undef ONLY_FORWARD_SYMBOL_DECLS_UNIQX_
     
-    #include "file_tree/FileTree.hpp"
+    #include "error/error.hpp"
+    #include "filesystem/FileTree.hpp"
     
     namespace
         nullix
@@ -33,28 +34,18 @@
                 /* variable to store the host name */
                 public: std::string const pmk_str_hostName { };
                 
-                /* class to manager & oraganize the host base dirs */
-                /*************************************************************|
-                |* @brief: Manages the application environment &
-                |* base directory state.
-                |* * @details: Filetree acts as the 'Single Source of Truth'
-                |* * for the filesystem layout.
-                |* * It handles the mapping of standard folders
-                |* * (config, cache, local) & the dotfile source repository.
-                |*************************************************************/
-                // public: class FileTree;
-                public: uniqx::system::FileTree dirs;
+                public: uniqx::fs::FileTree dirs;
                 
                 private: [[
                     nodiscard
-                    ( "Important: returns k_username" )
+                    ( "Important: returns kr_username" )
                 ]] auto static
                     _mtGet_str_userName
                     (
                         std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     )
-                -> std::expected <std::string , Err_t_>;
+                -> std::expected <std::string , errika::Err_t_>;
                 
                 private: [[
                     nodiscard
@@ -65,16 +56,36 @@
                         std::src_loc const /* k_sl_srcLoc_ */ =
                         { std::src_loc::current ( ) }
                     )
-                -> std::expected <std::string, Err_t_>;
+                -> std::expected <std::string, errika::Err_t_>;
                 
-                public: auto
+                private: auto
                     _mtGet_str_hostInfo
                     ( void /* v_ */ ) const
                 -> std::string;
                 
-                public: auto static
+                private: auto static
                     mt_fsp_userHome
                     ( void /* v_ */ )
+                -> std::fs::path;
+                
+                public: auto userName
+                    ( void /* v */ ) const
+                    noexcept ( true )
+                -> std::string;
+                
+                public: auto hostName
+                    ( void /* v */ ) const
+                    noexcept ( true )
+                -> std::string;
+                
+                public: auto hostInfo
+                    ( void /* v */ ) const
+                    noexcept ( true )
+                -> std::string;
+                
+                public: auto static userHome
+                    ( void /* v */ )
+                    noexcept ( true )
                 -> std::fs::path;
                 
                 public: explicit

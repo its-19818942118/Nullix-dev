@@ -9,9 +9,9 @@
 #undef ONLY_FORWARD_SYMBOL_DECLS_NULLIX_
 
 #include "host/host.hpp"
-#include "diagnostics/error.hpp"
+#include "error/error.hpp"
+#include "filesystem/FileTree.hpp"
 #include "diagnostics/Diagnostics.hpp"
-#include "system/file_tree/FileTree.hpp"
 
 
 namespace
@@ -20,18 +20,18 @@ namespace
     
     [[
         nodiscard
-        ( "Important: returns k_username" )
+        ( "Important: returns kr_username" )
     ]] auto
         Host::_mtGet_str_userName
         ( std::src_loc const k_sl_srcLoc_ )
-    -> std::expected <std::string , Err_t_>
+    -> std::expected <std::string , errika::Err_t_>
     {
         
         if
-            ( auto const& k_username = std::getenv ( "USER" ) )
+            ( auto const& kr_username = std::getenv ( "USER" ) )
             [[likely]]
         {
-            return { k_username };
+            return { kr_username };
         }
         
         else [[unlikely]]
@@ -41,9 +41,9 @@ namespace
                 {
                     std::unexpected
                     (
-                        Err_t_
+                        errika::Err_t_
                         {
-                            Err_t_::e_ErrType::Fatal ,
+                            errika::Err_t_::e_ErrType::Fatal ,
                             "function `std::getenv(USER)` "
                             "provided by header <cstdlib> FAILED." ,
                             k_sl_srcLoc_
@@ -57,18 +57,18 @@ namespace
     
     [[
         nodiscard
-        ( "Important: returns k_hostname" )
+        ( "Important: returns kr_hostname" )
     ]] auto
         Host::_mtGet_str_hostName
         ( std::src_loc const k_sl_srcLoc_ )
-    -> std::expected <std::string, Err_t_>
+    -> std::expected <std::string, errika::Err_t_>
     {
         
         if
-            ( auto const& k_hostname = unistd::gethostname ( ) )
+            ( auto const& kr_hostname = unistd::gethostname ( ) )
         {
             
-            return { *k_hostname };
+            return { *kr_hostname };
             
         }
         
@@ -77,9 +77,9 @@ namespace
                 
                 std::unexpected
                 (
-                    Err_t_
+                    errika::Err_t_
                     {
-                        Err_t_::e_ErrType::Fatal ,
+                        errika::Err_t_::e_ErrType::Fatal ,
                         "function `unistd::gethostname()` "
                         "provided by header <unistd.h> FAILED." ,
                         k_sl_srcLoc_
@@ -163,79 +163,73 @@ namespace
         
     }
     
+    auto Host::userName
+        ( void /* v_ */ ) const
+        noexcept ( true )
+    -> std::string
+    {
+        
+        return
+            {
+                this->_mtGet_str_userName ( )
+                ? *this->_mtGet_str_userName ( )
+                : this->_mtGet_str_userName ( ).error ( ).mt_str_errLog_or
+                ( "unknown-user" )
+            }
+        ;
+        
+    }
+    
+    auto Host::hostName
+        ( void /* v_ */ ) const
+        noexcept ( true )
+    -> std::string
+    {
+        
+        return
+            {
+                this->_mtGet_str_hostName ( )
+                ? *this->_mtGet_str_hostName ( )
+                : this->_mtGet_str_hostName ( ).error ( ).mt_str_errLog_or
+                ( "unknown-host" )
+            }
+        ;
+        
+    }
+    
+    auto Host::hostInfo
+        ( void /* v_ */ ) const
+        noexcept ( true )
+    -> std::string
+    {
+        
+        return { this->_mtGet_str_hostInfo ( ) };
+        
+    }
+    
+    auto Host::userHome
+        ( void /* v_ */ )
+        noexcept ( true )
+    -> std::fs::path
+    {
+        
+        return { mt_fsp_userHome ( ) };
+        
+    }
+    
     CLASS_CTOR
         Host::Host
         ( void /* v_ */ )
-        : pmk_str_userName
-        (
-            [ username { this->_mtGet_str_userName ( ) } ]
-            {
-                
-                return
-                    (
-                        username
-                        ? *username
-                        : username.error ( ).mt_str_errLog_or
-                        ( "unknown-user" )
-                    )
-                ;
-                
-            } ( )
-        )
-        , pmk_str_hostName
-        (
-            [ hostname { this->_mtGet_str_hostName ( ) } ]
-            {
-                return
-                    (
-                        hostname
-                        ? *hostname
-                        : hostname.error
-                        ( ).mt_str_errLog_or
-                        ( "unknown-host" )
-                    )
-                ;
-                
-            } ( )
-        )
-        , dirs ( uniqx::system::FileTree ( this->mt_fsp_userHome ( ) ) )
+        : pmk_str_userName ( this->userName ( ) )
+        , pmk_str_hostName ( this->hostName ( ) )
+        , dirs ( this->userHome ( ) )
     { }
     
     CLASS_CTOR
         Host::Host
         ( std::fs::path const& kr_fsp_userHome_ )
-        : pmk_str_userName
-        (
-            [ username { this->_mtGet_str_userName ( ) } ]
-            {
-                
-                return
-                    (
-                        username
-                        ? *username
-                        : username.error ( ).mt_str_errLog_or
-                        ( "unknown-user" )
-                    )
-                ;
-                
-            } ( )
-        )
-        , pmk_str_hostName
-        (
-            [ hostname { this->_mtGet_str_hostName ( ) } ]
-            {
-                return
-                    (
-                        hostname
-                        ? *hostname
-                        : hostname.error
-                        ( ).mt_str_errLog_or
-                        ( "unknown-host" )
-                    )
-                ;
-                
-            } ( )
-        )
+        : pmk_str_userName ( this->userName ( ) )
+        , pmk_str_hostName ( this->hostName ( ) )
         , dirs ( kr_fsp_userHome_ )
     { }
     

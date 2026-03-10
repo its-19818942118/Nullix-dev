@@ -25,15 +25,6 @@
             }
         ;
         
-        /*********************************************************************!
-        @brief: A Unix like filesystem tree layout to easily manage files
-        * & perform operations
-        @details: FileTree acts as the 'Single Source of Truth' for the
-        * * filesystem layout.
-        * * It handles the mapping of standard folders (config, cache, local)
-        * * & the dotfile source repository (optional).
-        !*********************************************************************/
-        
         namespace [[
                 /* nullAttr_ */
             ]] system
@@ -58,6 +49,26 @@
             
         } /* namespace system */
         
+        namespace [[
+                /* nullAttr_ */
+            ]] filesystem
+        {
+            
+            class Path;
+            
+            class FileTree;
+            
+        } /* namespace filesystem */
+        
+        namespace [[
+                /* nullAttr_ */
+            ]] fs
+        {
+            
+            using namespace uniqx::filesystem;
+            
+        } /* namespace fs */
+        
     } /* namespace uniqx */
     
     /*************************************************************************!
@@ -77,12 +88,12 @@
     !*************************************************************************/
     #if !defined(ONLY_FORWARD_SYMBOL_DECLS_UNIQX_)
     # /* IWYU pragma: begin_exports */
+    #   include "filesystem/Path.hpp"
+    #   include "filesystem/FileTree.hpp"
     #   include "system/process/ProcPd.hpp"
     #   include "system/process/ProcPipe.hpp"
     #   include "system/process/ProcResult.hpp"
     #   include "system/process/SubProcess.hpp"
-    #   include "system/file_tree/FileTree.hpp"
-    #   include "system/file_tree/PathProxy.hpp"
     # /* IWYU pragma: end_exports */
     #endif /* ONLY_FORWARD_SYMBOL_DECLS_UNIQX_ */
     
