@@ -105,9 +105,9 @@ target_link_libraries ( nullib PRIVATE stdc++exp )
 target_compile_definitions ( nullib PRIVATE TOML_EXCEPTIONS=0 )
 
 # i added this for testing stuff out
-add_executable(nullib_test
-    test/main.cpp
-)
-target_link_libraries(nullib_test
-    PRIVATE nullix::nullib
-)
+# add_executable(nullib_test
+#     test/main.cpp
+# )
+# target_link_libraries(nullib_test
+#     PRIVATE nullix::nullib
+# )
