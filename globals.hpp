@@ -22,12 +22,12 @@
     #define LIB_UNIQX_VERSION_ "v0.1.2"
     #define LIB_NULLIX_VERSION_ "v1.1.1"
     
-    DIAGNOSTICS_PUSH /* silence gblx_detail_ attrs_ */
+    DIAGNOSTICS_PUSH /* silence nullib_detail_ attrs_ */
     DIAGNOSTICS_WARNING ( "-Wunknown-attributes" )
     
     inline namespace [[
             
-        ]] gblx_detail_
+        ]] nullib_detail_
     {
         
         auto
@@ -65,7 +65,7 @@
     * cool
     **************************************************************************/
     inline namespace [[
-            gblx_detail_::documentation_
+            nullib_detail_::documentation_
             ( "Wrap the gethostname unistd function to `unistd::` namespace" )
         ]] unistd
     {
