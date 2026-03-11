@@ -14,7 +14,7 @@
 using namespace nullix;
 
 auto
-    Generator::computeNextGeneration()
+    Base::Generator::computeNextGeneration()
 -> std::expected<int, errika::Err_t_>
 {
     std::string HOME = std::string(this->userHomePath);
@@ -70,7 +70,7 @@ auto
 
 
 auto
-    Generator::getModules()
+    Base::Generator::getModules()
 -> std::expected<std::vector<std::string>, errika::Err_t_>
 {
 
@@ -124,7 +124,7 @@ auto
 }
 
 auto
-    Generator::copyConfigs(const std::filesystem::path &genDirPath)
+    Base::Generator::copyConfigs(const std::filesystem::path &genDirPath)
 -> std::expected<bool, errika::Err_t_>
 {
     std::error_code ec;
@@ -210,7 +210,7 @@ auto
 };
 
 auto
-    Generator::copyPackageList(const std::string &genDirName)
+    Base::Generator::copyPackageList(const std::string &genDirName)
 -> std::expected<bool, errika::Err_t_>
 {
     std::error_code ec;
@@ -349,7 +349,7 @@ auto
 }
 
 auto
-    Generator::updateState(const int &nextGen)
+    Base::Generator::updateState(const int &nextGen)
 -> std::expected<bool, errika::Err_t_>
 {
     //updating state
@@ -403,7 +403,7 @@ auto
 };
 
 auto
-    Generator::createDirectories(const std::filesystem::path &genDirPath)
+    Base::Generator::createDirectories(const std::filesystem::path &genDirPath)
 -> std::expected<bool, errika::Err_t_>
 {
     // creating directories
@@ -434,7 +434,7 @@ auto
     return true;
 }
 auto
-    Generator::generate()
+    Base::Generator::generate()
 -> std::expected<bool, errika::Err_t_>
 {
 
