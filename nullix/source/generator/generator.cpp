@@ -1,6 +1,5 @@
 #include "generator/generator.hpp"
 #include <cstdlib>
-#include <exception>
 #include <expected>
 #include <filesystem>
 #include <print>
