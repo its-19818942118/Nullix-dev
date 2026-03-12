@@ -124,9 +124,12 @@
                         long const /* errCode_ */ ,
                         e_ErrType const /* errType_ */ ,
                         std::string const /* kr_str_errWhat_ */ ,
+                        // caller is explicit. it shows which function call
+                        // caused the error
                         std::source_location const /* k_sl_errWhereCaller_ */ ,
                         std::source_location const /* k_sl_errWhereOrigin_ */ =
                         { std::source_location::current ( ) }
+                        // origin is implicit.
                     )
                 ;
                 

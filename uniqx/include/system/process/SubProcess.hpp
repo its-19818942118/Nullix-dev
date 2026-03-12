@@ -54,7 +54,7 @@
                 public: auto
                     static create
                     (
-                        string_t const& /* kr_str_binName_ */ ,
+                        string_t const& /* kr_str_binName_ */ = { } ,
                         vecStr_t const& /* kr_vecStr_argv_ */ = { }
                     )
                 -> SubProcess;

@@ -8,7 +8,7 @@ project( nullib
     DESCRIPTION "A set of internal and external libraries for Nullix"
 )
 
-add_library ( nullib )
+add_library ( nullib SHARED )
 
 add_library ( nullix::nullib ALIAS nullib )
 
@@ -44,7 +44,7 @@ target_compile_options( nullib PRIVATE
         -fdiagnostics-color
         -ferror-limit=99999999
     >
-    
+    --verbose
 )
 
 target_compile_options ( nullib PUBLIC
@@ -97,8 +97,8 @@ target_include_directories ( nullib PUBLIC
     external/header_only/include/toml++
 )
 
-target_link_options ( nullib PRIVATE stdc++exp )
+target_link_options ( nullib PRIVATE -lstdc++exp )
 
-target_link_libraries ( nullib PRIVATE stdc++exp )
+target_link_libraries ( nullib PRIVATE -lstdc++exp )
 
 target_compile_definitions ( nullib PRIVATE TOML_EXCEPTIONS=0 )
