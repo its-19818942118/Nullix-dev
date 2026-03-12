@@ -110,9 +110,9 @@ namespace
                     (
                         "{}@{}"
                         , this->_mtGet_str_userName ( ).error
-                        ( ).mt_str_fallback ( "unknown_user" )
+                        ( ).fallback ( "unknown_user" )
                         , this->_mtGet_str_hostName ( ).error
-                        ( ).mt_str_fallback ( "unknown_host" )
+                        ( ).fallback ( "unknown_host" )
                     )
                 }
             ;
@@ -148,7 +148,7 @@ namespace
             _user
             {
                 Host::_mtGet_str_userName ( ).error
-                ( ).mt_str_errLog_or ( "unknown_nullixUser" )
+                ( ).logReport_and ( "unknown_nullixUser" )
             }
         ;
         
@@ -174,7 +174,7 @@ namespace
                 this->_mtGet_str_userName ( )
                 ? *this->_mtGet_str_userName ( )
                 : this->_mtGet_str_userName ( ).error
-                ( ).mt_str_errLog_or ( "unknown-user" )
+                ( ).logReport_and ( "unknown-user" )
             }
         ;
         
@@ -191,7 +191,7 @@ namespace
                 this->_mtGet_str_hostName ( )
                 ? *this->_mtGet_str_hostName ( )
                 : this->_mtGet_str_hostName ( ).error
-                ( ).mt_str_errLog_or ( "unknown-host" )
+                ( ).logReport_and ( "unknown-host" )
             }
         ;
         

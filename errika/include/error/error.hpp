@@ -86,21 +86,21 @@
                 public: [[ nodiscard
                     ( "Important: returns a formatted log string" )
                 ]] virtual auto
-                    mt_str_errLog
+                    errReport
                     ( void /* v_ */ ) const
                 -> std::string;
                 
                 public: [[ nodiscard
                     ( "Important: returns a fallback_ value" ) ,
                 ]] auto
-                    mt_str_fallback
+                    fallback
                     ( std::string const& fallback_ ) const
                 -> std::string;
                 
                 public: [[ nodiscard
                     ( "Important: prints error & returns a fallback_ value" ) ,
                 ]] auto
-                    mt_str_errLog_or
+                    logReport_and
                     ( std::string const& fallback_ ) const
                 -> std::string;
                 
@@ -124,19 +124,16 @@
                         long const /* errCode_ */ ,
                         e_ErrType const /* errType_ */ ,
                         std::string const /* kr_str_errWhat_ */ ,
-                        // caller is explicit. it shows which function call
-                        // caused the error
                         std::source_location const /* k_sl_errWhereCaller_ */ ,
                         std::source_location const /* k_sl_errWhereOrigin_ */ =
                         { std::source_location::current ( ) }
-                        // origin is implicit.
                     )
                 ;
                 
                 public: [[ nodiscard
                     ( "Important: returns a formatted log string" )
                 ]] auto
-                    mt_str_errLog
+                    errReport
                     ( void /* v_ */ ) const
                 -> std::string override;
                 public: constexpr

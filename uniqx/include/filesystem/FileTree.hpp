@@ -46,11 +46,11 @@
                     noexcept ( false )
                 CLASS_CTOR;
                 
-                public: explicit
-                    CLASS_CTOR FileTree
-                    ( filesystem::Path const& /* kr_ufP_userHome_ */ )
-                    noexcept ( false )
-                CLASS_CTOR;
+                // public: explicit
+                //     CLASS_CTOR FileTree
+                //     ( filesystem::Path const& /* kr_ufP_userHome_ */ )
+                //     noexcept ( false )
+                // CLASS_CTOR;
                 
                 public: auto home
                     ( void /* v_ */ ) const

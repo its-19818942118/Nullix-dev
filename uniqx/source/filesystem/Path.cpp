@@ -1,5 +1,5 @@
 #include <print>
-#include <chrono>
+// #include <chrono>
 #include <optional>
 #include <functional>
 #include <filesystem>
@@ -68,7 +68,7 @@ namespace [[
                     {
                         long { 404L } ,
                         errika::ErrInt_t_::e_ErrType::Fatal ,
-                        _ec_errCode.message ( ) ,
+                        "File not found" ,
                         k_sl_srcLoc_
                     }
                 }
@@ -78,8 +78,8 @@ namespace [[
         
         if
             (
-                std::fs::exists ( kr_fsp_newDestPath_ ) ||
-                std::fs::is_symlink ( kr_fsp_newDestPath_ )
+                std::fs::exists ( std::move ( kr_fsp_newDestPath_ ) ) ||
+                std::fs::is_symlink ( std::move ( kr_fsp_newDestPath_ ) )
             )
         {
             
@@ -97,51 +97,55 @@ namespace [[
             
         }
         
+        _ec_errCode.clear();
         
-        if
-            (
-                bool const k_b_created
-                    {
-                        std::fs::create_directories
-                        ( kr_fsp_newDestPath_.parent_path ( ) , _ec_errCode )
-                    }
-                ; _ec_errCode || k_b_created
-            )
-        {
+        // if
+        //     (
+        //         bool const k_b_created
+        //             {
+        //                 std::fs::create_directories
+        //                 ( kr_fsp_newDestPath_.parent_path ( ) , _ec_errCode )
+        //             }
+        //         ; !_ec_errCode || !k_b_created
+        //     )
+        // {
             
-            return
-                std::unexpected<errika::ErrInt_t_>
-                {
-                    errika::ErrInt_t_
-                    {
-                        _ec_errCode.value ( ) ,
-                        errika::ErrInt_t_::e_ErrType::Fatal ,
-                        _ec_errCode.message ( ) ,
-                        k_sl_srcLoc_
-                    }
-                }
-            ;
             
-        }
+        //     return
+        //     (
+        //         std::println ( "{} , ec = {} , ec.reason = {} , ec.cat = {}" , k_b_created , _ec_errCode.value() , _ec_errCode.message() , _ec_errCode.category().name() ),
+        //     std::unexpected<errika::ErrInt_t_>
+        //     {
+        //         errika::ErrInt_t_
+        //         {
+        //             _ec_errCode.value ( ) ,
+        //             errika::ErrInt_t_::e_ErrType::Fatal ,
+        //             _ec_errCode.message ( ) ,
+        //             k_sl_srcLoc_
+        //         }
+        //     }
+        // );
+            
+        // }
         
         auto _fsp_tmpLink { kr_fsp_newDestPath_ };
         
         // _fsp_tmpLink.replace_extension ( ".ufP_ASLink" );
-        // _fsp_tmpLink += ".ufP_ASLink";
+        _fsp_tmpLink += ".ufP_ASLink";
         
         using namespace std::chrono;
         
-        auto const
-            k_khrClock_epochTimeSeed
-            {
-                static_cast<nanoseconds>
-                ( steady_clock::now ( ).time_since_epoch ( ) )
-            }
-        ;
+        // auto const
+        //     k_khrClock_epochTimeSeed
+        //     {
+        //         static_cast<nanoseconds>
+        //         ( steady_clock::now ( ).time_since_epoch ( ) )
+        //     }
+        // ;
         
-        _fsp_tmpLink += std::format
-            ( ".ufP_ASLink.{:X}" , k_khrClock_epochTimeSeed.count ( ) )
-        ;
+        // _fsp_tmpLink += std::format
+        //     ( ".ufP_ASLink.{:X}" , k_khrClock_epochTimeSeed.count ( ) )
+        // ;
         
         if
             ( std::fs::is_directory ( std::move ( *this ) , _ec_errCode ) )

@@ -85,7 +85,7 @@ namespace
         nodiscard
         ( "Important: returns a formatted log string" )
     ]] auto
-        Error::mt_str_errLog
+        Error::errReport
         ( void /* v_ */ ) const
     -> std::string
     {
@@ -168,7 +168,7 @@ namespace
         nodiscard
         ( "Important: returns a fallback_ value" ) ,
     ]] auto
-        Error::mt_str_fallback
+        Error::fallback
         ( std::string const& fallback_ ) const
     -> std::string
     {
@@ -181,12 +181,12 @@ namespace
         nodiscard
         ( "Important: prints error & returns a fallback_ value" ) ,
     ]] auto
-        Error::mt_str_errLog_or
+        Error::logReport_and
         ( std::string const& fallback_ ) const
     -> std::string
     {
         
-        std::print ( stderr , "{}" , mt_str_errLog ( ) );
+        std::print ( stderr , "{}" , errReport ( ) );
         
         return { fallback_ };
         
@@ -211,7 +211,7 @@ namespace
         nodiscard
         ( "Important: returns a formatted log string" )
     ]] auto
-        ErrorCode::mt_str_errLog
+        ErrorCode::errReport
         ( void /* v_ */ ) const
     -> std::string
     {

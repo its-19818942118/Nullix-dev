@@ -22,12 +22,12 @@ namespace [[
         this->sync_all ( );
     }
     
-    CLASS_CTOR filesystem::FileTree::FileTree
-            ( uniqx::fs::Path const& kr_ufP_userHome_ )
-        : PMm_ufP_actv_userHome ( std::move ( kr_ufP_userHome_ ) )
-    {
-        this->sync_all ( );
-    }
+    // CLASS_CTOR filesystem::FileTree::FileTree
+    //         ( uniqx::fs::Path const& kr_ufP_userHome_ )
+    //     : PMm_ufP_actv_userHome ( std::move ( kr_ufP_userHome_ ) )
+    // {
+    //     this->sync_all ( );
+    // }
     
     auto filesystem::
         FileTree::home
