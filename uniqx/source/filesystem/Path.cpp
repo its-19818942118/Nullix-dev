@@ -76,28 +76,28 @@ namespace [[
             
         }
         
-        if
-            (
-                std::fs::exists ( std::move ( kr_fsp_newDestPath_ ) ) ||
-                std::fs::is_symlink ( std::move ( kr_fsp_newDestPath_ ) )
-            )
-        {
+        // if
+        //     (
+        //         std::fs::exists ( std::move ( kr_fsp_newDestPath_ ) ) ||
+        //         std::fs::is_symlink ( std::move ( kr_fsp_newDestPath_ ) )
+        //     )
+        // {
             
-            std::println
-                (
-                    stderr ,
-                    "::[ warn ]: ( uniqx::fs::ASLink )\n"
-                    "{0:>4}Skipped syncing targetPath {1:?}.\n"
-                    "{0:>4}Destination path {2:?} already exists!"
-                    , "" , this->string ( ) , kr_fsp_newDestPath_.string ( )
-                )
-            ;
+        //     std::println
+        //         (
+        //             stderr ,
+        //             "::[ warn ]: ( uniqx::fs::ASLink )\n"
+        //             "{0:>4}Skipped syncing targetPath {1:?}.\n"
+        //             "{0:>4}Destination path {2:?} already exists!"
+        //             , "" , this->string ( ) , kr_fsp_newDestPath_.string ( )
+        //         )
+        //     ;
             
-            return ( std::move ( *this ) );
+        //     return ( std::move ( *this ) );
             
-        }
+        // }
         
-        _ec_errCode.clear();
+        // _ec_errCode.clear();
         
         // if
         //     (
