@@ -131,7 +131,7 @@ namespace [[
         auto _fsp_tmpLink { kr_fsp_newDestPath_ };
         
         // _fsp_tmpLink.replace_extension ( ".ufP_ASLink" );
-        _fsp_tmpLink += ".ufP_ASLink";
+        // _fsp_tmpLink += ".ufP_ASLink";
         
         using namespace std::chrono;
         
@@ -185,26 +185,26 @@ namespace [[
             
         }
         
-        std::fs::rename ( _fsp_tmpLink , kr_fsp_newDestPath_ , _ec_errCode );
+        // std::fs::rename ( _fsp_tmpLink , kr_fsp_newDestPath_ , _ec_errCode );
         
-        if
-            ( _ec_errCode )
-        {
+        // if
+        //     ( _ec_errCode )
+        // {
             
-            return
-                std::unexpected<errika::ErrInt_t_>
-                {
-                    errika::ErrInt_t_
-                    {
-                        _ec_errCode.value ( ) ,
-                        errika::ErrInt_t_::e_ErrType::Fatal ,
-                        _ec_errCode.message ( ) ,
-                        k_sl_srcLoc_
-                    }
-                }
-            ;
+        //     return
+        //         std::unexpected<errika::ErrInt_t_>
+        //         {
+        //             errika::ErrInt_t_
+        //             {
+        //                 _ec_errCode.value ( ) ,
+        //                 errika::ErrInt_t_::e_ErrType::Fatal ,
+        //                 _ec_errCode.message ( ) ,
+        //                 k_sl_srcLoc_
+        //             }
+        //         }
+        //     ;
             
-        }
+        // }
         
         std::println
             (
