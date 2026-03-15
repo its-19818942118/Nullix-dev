@@ -13,18 +13,6 @@
     #undef ONLY_FORWARD_SYMBOL_DECLS_ERRIKA_
     
     namespace
-        errika::error::detail
-    {
-        
-        [[
-            nodiscard ( "Important: returns sanitized kr_str_errWhat_" )
-        ]] auto sanErr
-            ( std::string_view errWhatRaw_ )
-        -> std::string;
-        
-    } /* namespace errika::error::v2::detail */
-    
-    namespace
         errika::error
     {
         
@@ -43,15 +31,15 @@
                 ;
                 
                 /* The error type like e_ErrType::Fatal */
-                protected: e_ErrType const Pmk_errType { };
+                protected: e_ErrType Pm_errType { };
                 /* The error reason variable to store the error reason */
-                protected: std::string const Pmk_errWhat { };
+                protected: std::string Pm_errWhat { };
                 /* The formatted error reason variable sanitized */
-                protected: std::string const Pmkr_str_errWhat_ { };
+                protected: std::string Pm_str_errWhat_ { };
                 /* The variable to store callsite error */
-                protected: std::source_location const Pmk_errWhereCaller { };
+                protected: std::source_location Pm_errWhereCaller { };
                 /* The variable to store function that made the error */
-                protected: std::source_location const Pmk_errWhereOrigin { };
+                protected: std::source_location Pm_errWhereOrigin { };
                 
                 // not marking all these `public:` (i forgot to) costed me 2hrs
                 // of debugging. always set accessor explicitly
@@ -65,11 +53,11 @@
                 public: auto
                     operator =
                     ( Error&& )
-                -> Error& = delete ( "disable mv/cp" );
+                -> Error& = delete ( "disable mv/cp operations" );
                 public: auto
                     operator =
                     ( Error const& )
-                -> Error& = delete ( "disable mv/cp" );
+                -> Error& = delete ( "disable mv/cp operations" );
                 
                 /* The constructor to initialize the values */
                 public: explicit
@@ -116,7 +104,7 @@
             {
                 
                 // use long to satisfy compiler's (-Wpadded) warnings
-                long const pmk_errCode_ { };
+                long pm_errCode_ { };
                 
                 public: explicit
                     CLASS_CTOR ErrorCode

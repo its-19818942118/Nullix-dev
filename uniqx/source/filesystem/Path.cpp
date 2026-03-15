@@ -1,3 +1,4 @@
+#include <expected>
 #include <print>
 // #include <chrono>
 #include <optional>
@@ -5,9 +6,11 @@
 #include <filesystem>
 #include <system_error>
 #include <source_location>
+#include <utility>
 
-#include "filesystem/Path.hpp"
 #include "globals.hpp"
+#include "error/error.hpp"
+#include "filesystem/Path.hpp"
 
 namespace [[
         /* nullAttr_ */
@@ -17,23 +20,6 @@ namespace [[
     template <typename Tp_>
     using optRef_t_ = std::optional<std::reference_wrapper<Tp_>>;
     
-    // namespace [[
-    //         /* nullAttr_ */
-    //     ]] filesystem
-    // {
-        
-    //     auto safe_tmp_filename
-    //         ( std::fs::path const& /* kr_fps_filePath_ */ )
-    //         noexcept ( true )
-    //     -> std::fs::path
-    //     {
-            
-    //         return { };
-            
-    //     }
-        
-    // } /* namespace filesystem */
-    
     auto filesystem::
         Path::parent
         ( void /* v_ */ ) const
@@ -41,7 +27,7 @@ namespace [[
     -> uniqx::fs::Path
     {
         
-        return { std::move ( this->parent_path ( ) ) };
+        return { this->parent_path ( ) };
         
     }
     
@@ -58,101 +44,47 @@ namespace [[
         std::error_code _ec_errCode { };
         
         if
-            ( !std::fs::exists ( std::move ( *this ) , _ec_errCode ) || _ec_errCode )
+            ( !std::fs::exists ( *this , _ec_errCode ) || _ec_errCode )
         {
             
             return
-                std::unexpected<errika::ErrInt_t_>
                 {
-                    errika::ErrInt_t_
+                    
+                    std::unexpected<errika::ErrInt_t_>
                     {
-                        long { 404L } ,
-                        errika::ErrInt_t_::e_ErrType::Fatal ,
-                        "File not found" ,
-                        k_sl_srcLoc_
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) == 0
+                            ? 404L : _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.value ( ) == 0
+                            ? "File not found" : _ec_errCode.message ( ) ,
+                            k_sl_srcLoc_
+                        }
                     }
+                    
                 }
             ;
             
         }
         
-        // if
-        //     (
-        //         std::fs::exists ( std::move ( kr_fsp_newDestPath_ ) ) ||
-        //         std::fs::is_symlink ( std::move ( kr_fsp_newDestPath_ ) )
-        //     )
-        // {
-            
-        //     std::println
-        //         (
-        //             stderr ,
-        //             "::[ warn ]: ( uniqx::fs::ASLink )\n"
-        //             "{0:>4}Skipped syncing targetPath {1:?}.\n"
-        //             "{0:>4}Destination path {2:?} already exists!"
-        //             , "" , this->string ( ) , kr_fsp_newDestPath_.string ( )
-        //         )
-        //     ;
-            
-        //     return ( std::move ( *this ) );
-            
-        // }
+        auto const&
+            kr_S_destName
+            { kr_fsp_newDestPath_.filename ( ).string ( ) }
+        ;
         
-        // _ec_errCode.clear();
+        auto _fsp_tmpLinkPath { kr_fsp_newDestPath_ };
         
-        // if
-        //     (
-        //         bool const k_b_created
-        //             {
-        //                 std::fs::create_directories
-        //                 ( kr_fsp_newDestPath_.parent_path ( ) , _ec_errCode )
-        //             }
-        //         ; !_ec_errCode || !k_b_created
-        //     )
-        // {
-            
-            
-        //     return
-        //     (
-        //         std::println ( "{} , ec = {} , ec.reason = {} , ec.cat = {}" , k_b_created , _ec_errCode.value() , _ec_errCode.message() , _ec_errCode.category().name() ),
-        //     std::unexpected<errika::ErrInt_t_>
-        //     {
-        //         errika::ErrInt_t_
-        //         {
-        //             _ec_errCode.value ( ) ,
-        //             errika::ErrInt_t_::e_ErrType::Fatal ,
-        //             _ec_errCode.message ( ) ,
-        //             k_sl_srcLoc_
-        //         }
-        //     }
-        // );
-            
-        // }
-        
-        auto _fsp_tmpLink { kr_fsp_newDestPath_ };
-        
-        // _fsp_tmpLink.replace_extension ( ".ufP_ASLink" );
-        // _fsp_tmpLink += ".ufP_ASLink";
-        
-        using namespace std::chrono;
-        
-        // auto const
-        //     k_khrClock_epochTimeSeed
-        //     {
-        //         static_cast<nanoseconds>
-        //         ( steady_clock::now ( ).time_since_epoch ( ) )
-        //     }
-        // ;
-        
-        // _fsp_tmpLink += std::format
-        //     ( ".ufP_ASLink.{:X}" , k_khrClock_epochTimeSeed.count ( ) )
-        // ;
+        _fsp_tmpLinkPath.replace_filename
+            ( kr_S_destName + ".fsp_ASLink_" )
+        ;
         
         if
-            ( std::fs::is_directory ( std::move ( *this ) , _ec_errCode ) )
+            ( std::fs::is_directory ( *this , _ec_errCode ) )
         {
             
             std::fs::create_directory_symlink
-                ( std::move ( *this ) , _fsp_tmpLink , _ec_errCode )
+                ( *this , _fsp_tmpLinkPath , _ec_errCode )
             ;
             
         }
@@ -160,9 +92,7 @@ namespace [[
         else
         {
             
-            std::fs::create_symlink
-                ( std::move ( *this ) , _fsp_tmpLink , _ec_errCode )
-            ;
+            std::fs::create_symlink ( *this , _fsp_tmpLinkPath , _ec_errCode );
             
         }
         
@@ -171,61 +101,54 @@ namespace [[
         {
             
             return
-                std::unexpected<errika::ErrInt_t_>
                 {
-                    errika::ErrInt_t_
+                    
+                    std::unexpected<errika::ErrInt_t_>
                     {
-                        _ec_errCode.value ( ) ,
-                        errika::ErrInt_t_::e_ErrType::Fatal ,
-                        _ec_errCode.message ( ) ,
-                        k_sl_srcLoc_
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) , k_sl_srcLoc_
+                        }
                     }
+                    
                 }
             ;
             
         }
         
-        // std::fs::rename ( _fsp_tmpLink , kr_fsp_newDestPath_ , _ec_errCode );
-        
-        // if
-        //     ( _ec_errCode )
-        // {
+        if
+            ( std::fs::exists ( _fsp_tmpLinkPath , _ec_errCode ) )
+        {
             
-        //     return
-        //         std::unexpected<errika::ErrInt_t_>
-        //         {
-        //             errika::ErrInt_t_
-        //             {
-        //                 _ec_errCode.value ( ) ,
-        //                 errika::ErrInt_t_::e_ErrType::Fatal ,
-        //                 _ec_errCode.message ( ) ,
-        //                 k_sl_srcLoc_
-        //             }
-        //         }
-        //     ;
+            std::fs::rename ( _fsp_tmpLinkPath , kr_S_destName , _ec_errCode );
             
-        // }
+        }
         
-        std::println
-            (
-                stderr ,
-                "::[ info ]: ( uniqx::fs::ASLink )\n"
-                "{0:>4}Successfully synced target/s!"
-                , ""
-            )
-        ;
+        if
+            ( _ec_errCode )
+        {
+            
+            return
+                {
+                    
+                    std::unexpected<errika::ErrInt_t_>
+                    {
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) , k_sl_srcLoc_
+                        }
+                    }
+                    
+                }
+            ;
+            
+        }
         
-        std::println
-            (
-                stderr ,
-                "::[ info ]: ( uniqx::fs ) Synced target paths!\n"
-                "{0:>4}From: target path {1:?} to destination path {2:?}\n"
-                "{0:>4}target path {1:?} -> destination path {2:?}"
-                , "" , this->string ( ) , kr_fsp_newDestPath_.string ( )
-            )
-        ;
-        
-        return ( std::move ( *this ) );
+        return { *this };
         
     }
     
@@ -240,22 +163,26 @@ namespace [[
         
         std::error_code _ec_errCode { };
         
-        auto const k_b_isSLink { std::fs::exists ( std::move ( *this ) , _ec_errCode ) };
+        auto const k_b_isSLink { std::fs::exists ( *this , _ec_errCode ) };
         
         if
             ( _ec_errCode )
         {
             
             return
-                std::unexpected<errika::ErrInt_t_>
                 {
-                    errika::ErrInt_t_
+                    
+                    std::unexpected<errika::ErrInt_t_>
                     {
-                        _ec_errCode.value ( ) ,
-                        errika::ErrInt_t_::e_ErrType::Fatal ,
-                        _ec_errCode.message ( ) ,
-                        k_sl_srcLoc_
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) ,
+                            k_sl_srcLoc_
+                        }
                     }
+                    
                 }
             ;
             
@@ -275,26 +202,29 @@ namespace [[
                 )
             ;
             
-            return ( std::move ( *this ) );
+            return { *this };
             
         }
         
         _ec_errCode.clear ( );
         
         if
-            ( !std::fs::remove ( std::move ( *this ) , _ec_errCode ) || _ec_errCode )
+            ( !std::fs::remove ( *this , _ec_errCode ) || _ec_errCode )
         {
             
             return
-                std::unexpected<errika::ErrInt_t_>
                 {
-                    errika::ErrInt_t_
+                    
+                    std::unexpected<errika::ErrInt_t_>
                     {
-                        _ec_errCode.value ( ) ,
-                        errika::ErrInt_t_::e_ErrType::Fatal ,
-                        _ec_errCode.message ( ) ,
-                        k_sl_srcLoc_
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) , k_sl_srcLoc_
+                        }
                     }
+                    
                 }
             ;
             
@@ -309,7 +239,7 @@ namespace [[
             )
         ;
         
-        return ( std::move ( *this ) );
+        return { *this };
         
     }
     
@@ -326,10 +256,15 @@ namespace [[
         std::error_code _ec_errCode { };
         
         if
-            ( auto const& k_res { this->unlink ( ) }; !k_res )
+            ( auto const k_res { this->unlink ( ) }; !k_res )
         {
             
-            return ( k_res );
+            return
+                {
+                    std::unexpected<errika::ErrInt_t_>
+                    { std::move ( k_res.error ( ) ) }
+                }
+            ;
             
         }
         
@@ -378,15 +313,19 @@ namespace [[
             {
                 
                 return
-                    std::unexpected<errika::ErrInt_t_>
                     {
-                        errika::ErrInt_t_
+                        
+                        std::unexpected<errika::ErrInt_t_>
                         {
-                            _ec_errCode.value ( ) ,
-                            errika::ErrInt_t_::e_ErrType::Fatal ,
-                            _ec_errCode.message ( ) ,
-                            k_sl_srcLoc_
+                            errika::ErrInt_t_
+                            {
+                                _ec_errCode.value ( ) ,
+                                errika::ErrInt_t_::e_ErrType::Fatal ,
+                                _ec_errCode.message ( ) ,
+                                k_sl_srcLoc_
+                            }
                         }
+                        
                     }
                 ;
                 
@@ -435,15 +374,19 @@ namespace [[
             {
                 
                 return
-                    std::unexpected<errika::ErrInt_t_>
                     {
-                        errika::ErrInt_t_
+                        
+                        std::unexpected<errika::ErrInt_t_>
                         {
-                            _ec_errCode.value ( ) ,
-                            errika::ErrInt_t_::e_ErrType::Fatal ,
-                            _ec_errCode.message ( ) ,
-                            k_sl_srcLoc_
+                            errika::ErrInt_t_
+                            {
+                                _ec_errCode.value ( ) ,
+                                errika::ErrInt_t_::e_ErrType::Fatal ,
+                                _ec_errCode.message ( ) ,
+                                k_sl_srcLoc_
+                            }
                         }
+                        
                     }
                 ;
                 
@@ -456,15 +399,19 @@ namespace [[
         {
             
             return
-                std::unexpected<errika::ErrInt_t_>
                 {
-                    errika::ErrInt_t_
+                    
+                    std::unexpected<errika::ErrInt_t_>
                     {
-                        _ec_errCode.value ( ) ,
-                        errika::ErrInt_t_::e_ErrType::Fatal ,
-                        _ec_errCode.message ( ) ,
-                        k_sl_srcLoc_
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) ,
+                            k_sl_srcLoc_
+                        }
                     }
+                    
                 }
             ;
             
@@ -478,7 +425,7 @@ namespace [[
             )
         ;
         
-        return ( std::move ( *this ) );
+        return { *this };
         
     }
     
@@ -489,11 +436,11 @@ namespace [[
     -> uniqx::fs::Path
     {
         
-        Path _ufP_presentPath { std::move ( std::move ( *this ) ) };
+        Path _ufP_presentPath { *this };
         
-        _ufP_presentPath /= std::move ( kr_fsp_subDir_ );
+        _ufP_presentPath /= kr_fsp_subDir_;
         
-        return ( _ufP_presentPath );
+        return { _ufP_presentPath };
         
     }
     
@@ -504,11 +451,11 @@ namespace [[
     // -> uniqx::fs::Path
     // {
         
-    //     Path _ufP_presentPath { std::move ( *this ) };
+    //     Path _ufP_presentPath { *this };
         
     //     _ufP_presentPath /= kr_ufP_subDir_.native ( );
         
-    //     return ( _ufP_presentPath );
+    //     return { _ufP_presentPath };
         
     // }
     
@@ -519,24 +466,45 @@ namespace [[
     // -> uniqx::fs::Path
     // {
         
-    //     Path _ufP_presentPath { std::move ( *this ) };
+    //     Path _ufP_presentPath { *this };
         
     //     _ufP_presentPath /= Sv_subDir_;
         
-    //     return ( _ufP_presentPath );
+    //     return { _ufP_presentPath };
         
     // }
     
     auto filesystem::
         Path::operator >>=
         (
-            std::fs::path const& kr_ufP_newDestPath_
+            std::fs::path const& kr_fsp_newDestPath_
         ) const
         noexcept ( false )
     -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>
     {
         
-        return ( this->atomicLinkTo ( std::move ( kr_ufP_newDestPath_ ) ) );
+        if
+            (
+                auto const k_res = this->atomicLinkTo ( kr_fsp_newDestPath_ );
+                !k_res
+            )
+        {
+            
+            return
+                {
+                    
+                    std::unexpected<errika::ErrInt_t_>
+                    { std::move ( k_res.error ( ) ) }
+                    
+                }
+            ;
+            
+        }
+        
+        else
+        {
+            return { std::move ( k_res.value ( ) ) };
+        }
         
     }
     

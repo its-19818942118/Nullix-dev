@@ -13,7 +13,19 @@
 #include "error/error.hpp"
 
 namespace
-    errika::error::detail
+    errika::error::_detail
+{
+    
+    [[
+        nodiscard ( "Important: returns sanitized kr_str_errWhat_" )
+    ]] auto sanErr
+        ( std::string_view errWhatRaw_ )
+    -> std::string;
+    
+} /* namespace errika::error::v2::_detail */
+
+namespace
+    errika::error::_detail
 {
     
     [[
@@ -60,25 +72,25 @@ namespace
     }
     
     
-} /* namespace errika::error::v2::detail */
+} /* namespace errika::error::v2::_detail */
 
 namespace
     errika::error
 {
     
     CLASS_CTOR
-        Error:: Error
+        Error::Error
             (
                 e_ErrType const errType_ ,
                 std::string const k_s_errWhat_ ,
                 std::source_location const k_sl_errWhereCaller_ ,
                 std::source_location const k_sl_errWhereOrigin_
             )
-        : Pmk_errType ( std::move ( errType_ ) )
-        , Pmk_errWhat ( std::move ( k_s_errWhat_ ) )
-        , Pmkr_str_errWhat_ ( detail::sanErr ( Pmk_errWhat ) )
-        , Pmk_errWhereCaller ( std::move ( k_sl_errWhereCaller_ ) )
-        , Pmk_errWhereOrigin ( std::move ( k_sl_errWhereOrigin_ ) )
+        : Pm_errType ( std::move ( errType_ ) )
+        , Pm_errWhat ( std::move ( k_s_errWhat_ ) )
+        , Pm_str_errWhat_ ( _detail::sanErr ( Pm_errWhat ) )
+        , Pm_errWhereCaller ( std::move ( k_sl_errWhereCaller_ ) )
+        , Pm_errWhereOrigin ( std::move ( k_sl_errWhereOrigin_ ) )
     { }
     
     [[
@@ -93,7 +105,7 @@ namespace
         std::string_view _errLevel { };
         
         switch
-            ( Pmk_errType )
+            ( Pm_errType )
         {
             case
                 e_ErrType::Fatal:
@@ -149,12 +161,12 @@ namespace
                     ":[\x1b[1m{1}\x1b[0m]>\n"
                     "{0:=>80}\n"
                     , ""
-                    , Pmk_errWhat
+                    , Pm_errWhat
                     , _errLevel
-                    , Pmk_errWhereOrigin.line ( )
-                    , Pmk_errWhereOrigin.column ( )
-                    , Pmk_errWhereOrigin.file_name ( )
-                    , Pmk_errWhereOrigin.function_name ( )
+                    , Pm_errWhereOrigin.line ( )
+                    , Pm_errWhereOrigin.column ( )
+                    , Pm_errWhereOrigin.file_name ( )
+                    , Pm_errWhereOrigin.function_name ( )
                 )
                 
             }
@@ -204,7 +216,7 @@ namespace
                 std::source_location const k_sl_errWhereOrigin_
             )
         : Error ( errType_ , kr_s_errWhat_ , k_sl_errWhereCaller_ , k_sl_errWhereOrigin_ )
-        , pmk_errCode_ ( std::move ( errCode_ ) )
+        , pm_errCode_ ( std::move ( errCode_ ) )
     { }
     
     [[
@@ -220,7 +232,7 @@ namespace
         std::string_view _errLevel { };
         
         switch
-            ( Pmk_errType )
+            ( Pm_errType )
         {
             case
                 e_ErrType::Fatal:
@@ -267,16 +279,16 @@ namespace
                     "<-- [{1}]> }}"
                     , ""
                     , _errLevel
-                    , pmk_errCode_
-                    , Pmk_errWhat
-                    , Pmk_errWhereCaller.line ( )
-                    , Pmk_errWhereCaller.column ( )
-                    , Pmk_errWhereCaller.file_name ( )
-                    , Pmk_errWhereCaller.function_name ( )
-                    , Pmk_errWhereOrigin.line ( )
-                    , Pmk_errWhereOrigin.column ( )
-                    , Pmk_errWhereOrigin.file_name ( )
-                    , Pmk_errWhereOrigin.function_name ( )
+                    , pm_errCode_
+                    , Pm_errWhat
+                    , Pm_errWhereCaller.line ( )
+                    , Pm_errWhereCaller.column ( )
+                    , Pm_errWhereCaller.file_name ( )
+                    , Pm_errWhereCaller.function_name ( )
+                    , Pm_errWhereOrigin.line ( )
+                    , Pm_errWhereOrigin.column ( )
+                    , Pm_errWhereOrigin.file_name ( )
+                    , Pm_errWhereOrigin.function_name ( )
                 )
                 
             }
@@ -289,19 +301,19 @@ namespace
     constexpr ErrorCode::operator int
         ( void /* v_ */ ) const noexcept
     {
-        return static_cast <int> ( pmk_errCode_ );
+        return static_cast <int> ( pm_errCode_ );
     }
     
     constexpr ErrorCode::operator long
         ( void /* v_ */ ) const noexcept
     {
-        return pmk_errCode_;
+        return pm_errCode_;
     }
     
     constexpr ErrorCode::operator bool
         ( void /* v_ */ ) const noexcept
     {
-        return pmk_errCode_;
+        return pm_errCode_;
     }
     
 }
