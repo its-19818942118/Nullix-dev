@@ -3,7 +3,8 @@
 #ifndef ERROR_HPP_ERRIKA_
     #define ERROR_HPP_ERRIKA_
     
-    #include <string>
+    #include "globals.hpp"
+#include <string>
     #include <source_location>
     
     #define ONLY_FORWARD_SYMBOL_DECLS_ERRIKA_
@@ -37,9 +38,9 @@
                 /* The formatted error reason variable sanitized */
                 protected: std::string Pm_str_errWhat_ { };
                 /* The variable to store callsite error */
-                protected: std::source_location Pm_errWhereCaller { };
+                protected: std::srcLoc_t_ Pm_errWhereCaller { };
                 /* The variable to store function that made the error */
-                protected: std::source_location Pm_errWhereOrigin { };
+                protected: std::srcLoc_t_ Pm_errWhereOrigin { };
                 
                 // not marking all these `public:` (i forgot to) costed me 2hrs
                 // of debugging. always set accessor explicitly
@@ -65,9 +66,9 @@
                     (
                         e_ErrType const /* errType_ */ ,
                         std::string const /* kr_str_errWhat_ */ ,
-                        std::source_location const /* k_sl_errWhereCaller_ */ ,
-                        std::source_location const /* k_sl_errWhereOrigin_ */ =
-                        { std::source_location::current ( ) }
+                        std::srcLoc_t_ const /* k_sl_errWhereCaller_ */ ,
+                        std::srcLoc_t_ const /* k_sl_errWhereOrigin_ */ =
+                        { std::srcLoc_t_::current ( ) }
                     )
                 ;
                 
@@ -112,9 +113,9 @@
                         long const /* errCode_ */ ,
                         e_ErrType const /* errType_ */ ,
                         std::string const /* kr_str_errWhat_ */ ,
-                        std::source_location const /* k_sl_errWhereCaller_ */ ,
-                        std::source_location const /* k_sl_errWhereOrigin_ */ =
-                        { std::source_location::current ( ) }
+                        std::srcLoc_t_ const /* k_sl_errWhereCaller_ */ ,
+                        std::srcLoc_t_ const /* k_sl_errWhereOrigin_ */ =
+                        { std::srcLoc_t_::current ( ) }
                     )
                 ;
                 

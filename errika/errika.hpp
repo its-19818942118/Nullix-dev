@@ -5,12 +5,6 @@
     
     #include "globals.hpp"
     
-    #include <source_location>
-    
-    namespace std {
-        using src_loc = ::std::source_location;
-    } /* namespace std */
-    
     namespace errika::error
     {
         

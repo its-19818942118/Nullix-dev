@@ -23,10 +23,6 @@
         using namespace ::std::filesystem;
     } /* namespace std::fs */
     
-    namespace std {
-        using src_loc = ::std::source_location;
-    } /* namespace std */
-    
     namespace
         nullix
     {

@@ -8,6 +8,7 @@
 #
 #undef ONLY_FORWARD_SYMBOL_DECLS_NULLIX_
 
+#include "globals.hpp"
 #include "host/host.hpp"
 #include "error/error.hpp"
 #include "filesystem/FileTree.hpp"
@@ -23,7 +24,7 @@ namespace
         ( "Important: returns kr_username" )
     ]] auto
         Host::_mtGet_str_userName
-        ( std::src_loc const k_sl_srcLoc_ )
+        ( std::srcLoc_t_ const k_sl_srcLoc_ )
     -> std::expected <std::string , errika::Err_t_>
     {
         
@@ -60,7 +61,7 @@ namespace
         ( "Important: returns kr_hostname" )
     ]] auto
         Host::_mtGet_str_hostName
-        ( std::src_loc const k_sl_srcLoc_ )
+        ( std::srcLoc_t_ const k_sl_srcLoc_ )
     -> std::expected <std::string, errika::Err_t_>
     {
         

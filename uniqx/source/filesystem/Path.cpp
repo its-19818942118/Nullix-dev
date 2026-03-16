@@ -1,12 +1,10 @@
-#include <expected>
 #include <print>
-// #include <chrono>
+#include <utility>
+#include <expected>
 #include <optional>
 #include <functional>
 #include <filesystem>
 #include <system_error>
-#include <source_location>
-#include <utility>
 
 #include "globals.hpp"
 #include "error/error.hpp"
@@ -23,7 +21,7 @@ namespace [[
     auto filesystem::
         Path::parent
         ( void /* v_ */ ) const
-        noexcept ( false )
+        noexcept ( true )
     -> uniqx::fs::Path
     {
         
@@ -35,9 +33,9 @@ namespace [[
         Path::atomicLinkTo
         (
             std::fs::path const& kr_fsp_newDestPath_ ,
-            std::src_loc const k_sl_srcLoc_
+            std::srcLoc_t_ const k_sl_srcLoc_
         ) const
-        noexcept ( false )
+        noexcept ( true )
     -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>
     {
         
@@ -54,11 +52,10 @@ namespace [[
                     {
                         errika::ErrInt_t_
                         {
-                            _ec_errCode.value ( ) == 0
-                            ? 404L : _ec_errCode.value ( ) ,
+                            _ec_errCode ? _ec_errCode.value ( ) : 404L ,
                             errika::ErrInt_t_::e_ErrType::Fatal ,
-                            _ec_errCode.value ( ) == 0
-                            ? "File not found" : _ec_errCode.message ( ) ,
+                            _ec_errCode ? _ec_errCode.message ( )
+                            : "File not found" ,
                             k_sl_srcLoc_
                         }
                     }
@@ -68,16 +65,9 @@ namespace [[
             
         }
         
-        auto const&
-            kr_S_destName
-            { kr_fsp_newDestPath_.filename ( ).string ( ) }
-        ;
-        
         auto _fsp_tmpLinkPath { kr_fsp_newDestPath_ };
         
-        _fsp_tmpLinkPath.replace_filename
-            ( kr_S_destName + ".fsp_ASLink_" )
-        ;
+        _fsp_tmpLinkPath += ".ufP_ASLink_";
         
         if
             ( std::fs::is_directory ( *this , _ec_errCode ) )
@@ -118,11 +108,144 @@ namespace [[
             
         }
         
+        std::fs::rename
+            ( _fsp_tmpLinkPath , kr_fsp_newDestPath_ , _ec_errCode )
+        ;
+        
         if
-            ( std::fs::exists ( _fsp_tmpLinkPath , _ec_errCode ) )
+            ( _ec_errCode )
         {
             
-            std::fs::rename ( _fsp_tmpLinkPath , kr_S_destName , _ec_errCode );
+            return
+                {
+                    
+                    std::unexpected<errika::ErrInt_t_>
+                    {
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) , k_sl_srcLoc_
+                        }
+                    }
+                    
+                }
+            ;
+            
+        }
+        
+        std::println
+            (
+                stderr ,
+                "::[ info ]: ( uniqx::fs::ASLink )\n"
+                "{0:>4}Successfully synced target/s!"
+                , ""
+            )
+        ;
+        
+        std::println
+            (
+                stderr ,
+                "::[ info ]: ( uniqx::fs ) Synced target paths!\n"
+                "{0:>4}From: target path {1:?} to destination path {2:?}\n"
+                "{0:>4}target path {1:?} -> destination path {2:?}"
+                , "" , this->string ( ) , kr_fsp_newDestPath_.string ( )
+            )
+        ;
+        
+        return { *this };
+        
+    }
+    
+    auto filesystem::
+        Path::backupAndLinkTo
+        (
+            std::fs::path const& kr_fsp_newDestPath_ ,
+            // std::fs::path const& kr_fsp_backupPath_ ,
+            std::srcLoc_t_ const k_sl_srcLoc_
+        ) const
+        noexcept ( true )
+    -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>
+    {
+
+        std::error_code _ec_errCode { };
+
+        if
+            ( !std::fs::exists ( *this , _ec_errCode ) || _ec_errCode )
+        {
+            
+            return
+                {
+                    
+                    std::unexpected<errika::ErrInt_t_>
+                    {
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode ? _ec_errCode.value ( ) : 404L ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode ? _ec_errCode.message ( )
+                            : "File not found" ,
+                            k_sl_srcLoc_
+                        }
+                    }
+                    
+                }
+            ;
+            
+        }
+        
+        auto _fsp_tmpLink { kr_fsp_newDestPath_ };
+        
+        _fsp_tmpLink += ".ufP_ASLink_";
+        
+        if
+            ( std::fs::is_directory ( *this , _ec_errCode ) )
+        {
+            
+            if
+                ( std::fs::is_symlink ( kr_fsp_newDestPath_ , _ec_errCode ) )
+            {
+                
+                std::fs::remove ( kr_fsp_newDestPath_ , _ec_errCode );
+                
+            }
+            
+            _ec_errCode.clear ( );
+            
+            if
+                ( _ec_errCode )
+            {
+                
+                return
+                    {
+                        
+                        std::unexpected<errika::ErrInt_t_>
+                        {
+                            errika::ErrInt_t_
+                            {
+                                _ec_errCode.value ( ) ,
+                                errika::ErrInt_t_::e_ErrType::Fatal ,
+                                _ec_errCode.message ( ) , k_sl_srcLoc_
+                            }
+                        }
+                        
+                    }
+                ;
+                
+            }
+            
+            std::fs::create_directory_symlink
+                ( *this , _fsp_tmpLink , _ec_errCode )
+            ;
+            
+        }
+        
+        else
+        {
+            
+            std::fs::create_symlink
+                ( *this , _fsp_tmpLink , _ec_errCode )
+            ;
             
         }
         
@@ -148,6 +271,100 @@ namespace [[
             
         }
         
+        bool _b_destExists { };
+        
+        auto _fsp_nlxBackup { kr_fsp_newDestPath_};
+        _fsp_nlxBackup += ".ufP_BASLink_";
+        
+        if
+            ( std::filesystem::exists ( kr_fsp_newDestPath_ ) )
+        {
+            
+            _b_destExists = true;
+            
+            std::fs::rename
+                ( kr_fsp_newDestPath_ , _fsp_nlxBackup , _ec_errCode )
+            ;
+            
+        }
+        
+        if
+            ( _ec_errCode )
+        {
+
+            return
+                {
+                    
+                    std::unexpected<errika::ErrInt_t_>
+                    {
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) , k_sl_srcLoc_
+                        }
+                    }
+                    
+                }
+            ;
+            
+        }
+        
+        std::fs::rename ( _fsp_tmpLink , kr_fsp_newDestPath_ , _ec_errCode );
+        
+        if
+            ( _ec_errCode )
+        {
+
+            if
+                ( _b_destExists )
+            {
+                
+                std::fs::rename
+                    ( _fsp_nlxBackup , kr_fsp_newDestPath_ , _ec_errCode )
+                ;
+                
+                std::fs::remove ( _fsp_tmpLink );
+                
+            }
+            
+            return
+                {
+                    
+                    std::unexpected<errika::ErrInt_t_>
+                    {
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) , k_sl_srcLoc_
+                        }
+                    }
+                    
+                }
+            ;
+            
+        }
+        
+        std::println
+            (
+                stderr ,
+                "::[ info ]: ( uniqx::fs::ASLink )\n"
+                "{0:>4}Successfully synced target/s!"
+                , ""
+            )
+        ;
+        
+        std::println
+            (
+                stderr ,
+                "::[ info ]: ( uniqx::fs ) Synced target paths!\n"
+                "{0:>4}From: target path {1:?} to destination path {2:?}\n"
+                "{0:>4}target path {1:?} -> destination path {2:?}"
+                , "" , this->string ( ) , kr_fsp_newDestPath_.string ( )
+            )
+        ;
+
         return { *this };
         
     }
@@ -155,9 +372,9 @@ namespace [[
     auto filesystem::
         Path::unlink
         (
-            std::src_loc const k_sl_srcLoc_
+            std::srcLoc_t_ const k_sl_srcLoc_
         ) const
-        noexcept ( false )
+        noexcept ( true )
     -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>
     {
         
@@ -247,9 +464,9 @@ namespace [[
         Path::prune
         (
             iLfsp_t_ iLfsp_boundaries_ ,
-            std::src_loc const k_sl_srcLoc_
+            std::srcLoc_t_ const k_sl_srcLoc_
         ) const
-        noexcept ( false )
+        noexcept ( true )
     -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>
     {
         
@@ -432,7 +649,7 @@ namespace [[
     auto filesystem::
         Path::operator /
         ( std::fs::path const& kr_fsp_subDir_ ) const
-        noexcept ( false )
+        noexcept ( true )
     -> uniqx::fs::Path
     {
         
@@ -479,7 +696,7 @@ namespace [[
         (
             std::fs::path const& kr_fsp_newDestPath_
         ) const
-        noexcept ( false )
+        noexcept ( true )
     -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>
     {
         

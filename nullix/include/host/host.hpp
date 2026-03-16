@@ -3,7 +3,8 @@
 #ifndef HOST_HPP_NULLIX_
     #define HOST_HPP_NULLIX_
     
-    #include <expected>
+    #include "globals.hpp"
+#include <expected>
     #include <filesystem>
     
     #define ONLY_FORWARD_SYMBOL_DECLS_NULLIX_
@@ -42,8 +43,8 @@
                 ]] auto static
                     _mtGet_str_userName
                     (
-                        std::src_loc const /* k_sl_srcLoc_ */ =
-                        { std::src_loc::current ( ) }
+                        std::srcLoc_t_ const /* k_sl_srcLoc_ */ =
+                        { std::srcLoc_t_::current ( ) }
                     )
                 -> std::expected <std::string , errika::Err_t_>;
                 
@@ -53,8 +54,8 @@
                 ]] auto static
                     _mtGet_str_hostName
                     (
-                        std::src_loc const /* k_sl_srcLoc_ */ =
-                        { std::src_loc::current ( ) }
+                        std::srcLoc_t_ const /* k_sl_srcLoc_ */ =
+                        { std::srcLoc_t_::current ( ) }
                     )
                 -> std::expected <std::string, errika::Err_t_>;
                 

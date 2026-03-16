@@ -3,6 +3,7 @@
 #ifndef PATH_HPP_UNIQX_
     #define PATH_HPP_UNIQX_
     
+    #include <array>
     #include <expected>
     #include <filesystem>
     #include <initializer_list>
@@ -42,43 +43,55 @@
                 /// @brief: std::fs::path constructors
                 using std::fs::path::path;
                 
+                template<std::size_t T_arrSz_>
+                using arfsp_t_ = std::array<std::fs::path const , T_arrSz_>;
                 using iLfsp_t_ = std::initializer_list<std::fs::path const>;
                 
                 public: auto parent
                     ( void /* v_ */ ) const
-                    noexcept ( false )
+                    noexcept ( true )
                 -> uniqx::fs::Path;
                 
                 public: auto atomicLinkTo
                     (
                         std::fs::path const& /* kr_fsp_newDestPath_ */ ,
-                        const std::src_loc /* k_sl_srcLoc_ */ =
-                        { std::src_loc::current ( ) }
+                        std::srcLoc_t_ const /* k_sl_srcLoc_ */ =
+                        { std::srcLoc_t_::current ( ) }
                     ) const
-                    noexcept ( false )
+                    noexcept ( true )
+                -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>;
+                
+                public: auto backupAndLinkTo
+                    (
+                        std::fs::path const& /* kr_fsp_newDestPath_ */ ,
+                        // std::fs::path const& /* kr_fsp_backupPath_ */ = { } ,
+                        std::srcLoc_t_ const /* k_sl_srcLoc_ */ =
+                        { std::srcLoc_t_::current ( ) }
+                    ) const
+                    noexcept ( true )
                 -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>;
                 
                 public: auto unlink
                     (
-                        const std::src_loc /* k_sl_srcLoc_ */ =
-                        { std::src_loc::current ( ) }
+                        std::srcLoc_t_ const /* k_sl_srcLoc_ */ =
+                        { std::srcLoc_t_::current ( ) }
                     ) const
-                    noexcept ( false )
+                    noexcept ( true )
                 -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>;
                 
                 public: auto prune
                     (
-                        iLfsp_t_ /* ilufP_boundaries_ */ ,
-                        const std::src_loc /* k_sl_srcLoc_ */ =
-                        { std::src_loc::current ( ) }
+                        iLfsp_t_ /* iLfsp_boundaries_ */ ,
+                        std::srcLoc_t_ const /* k_sl_srcLoc_ */ =
+                        { std::srcLoc_t_::current ( ) }
                     ) const
-                    noexcept ( false )
+                    noexcept ( true )
                 -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>;
                 
                 public: auto
                     operator /
                     ( std::fs::path const& /* kr_fsp_subDir_ */ ) const
-                    noexcept ( false )
+                    noexcept ( true )
                 -> uniqx::fs::Path;
                 
                 // public: auto
@@ -98,8 +111,16 @@
                     (
                         std::fs::path const& /* kr_ufP_newDestPath_ */
                     ) const
-                    noexcept ( false )
+                    noexcept ( true )
                 -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>;
+                
+                // public: auto
+                //     operator >>=
+                //     (
+                //         arfsp_t_<2> const& /* kr_arfsp_bckupDestPath_ */
+                //     ) const
+                //     noexcept ( false )
+                // -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>;
                 
             } /* class filesystem::Path */
         ;

@@ -18,12 +18,12 @@
     #define STRUCT_CTOR Null_Ctor_
     #define STRUCT_DTOR Null_Dtor_
     
-    #define LIB_ULIX_VERSION_ "v0.0.1"
-    #define LIB_UNIQX_VERSION_ "v0.1.2"
-    #define LIB_NULLIX_VERSION_ "v1.1.1"
+    #define LIB_UNIQX_VERSION_ "v0.0.3"
+    #define LIB_NULLIB_VERSION_ "v0.0.4"
+    #define LIB_NULLIX_VERSION_ "v0.0.5"
     
     DIAGNOSTICS_PUSH /* silence nullib_detail_ attrs_ */
-    DIAGNOSTICS_WARNING ( "-Wunknown-attributes" )
+    DIAGNOSTICS_IGNORED ( "-Wunknown-attributes" )
     
     inline namespace [[
             
@@ -57,7 +57,7 @@
         
         ]] std
     {
-        using src_loc = ::std::source_location;
+        using srcLoc_t_ = ::std::source_location;
     } /* namespace std */
     
     /**************************************************************************
@@ -73,23 +73,23 @@
         auto inline
             gethostname
             ( void /* v_ */ )
-        -> std::optional <std::string>
+        -> std::optional<std::string>
         {
             
-            #define HOSTNAME_MAX 1<<8
+            #define HOSTNAME_MAX +1 << +8
             
             if
                 (
-                    std::array <char , ( HOSTNAME_MAX ) + 1L> hostNm_ { };
-                    ::gethostname ( hostNm_.data ( ) , hostNm_.size ( ) ) == 0L
-                ) [[likely]]
+                    std::array<char , ( HOSTNAME_MAX ) + ( +1L )> hstNm_ { };
+                    ::gethostname ( hstNm_.data ( ) , hstNm_.size ( ) ) == +0L
+                ) [[ likely ]]
             {
                 return
-                    { hostNm_.data ( ) }
+                    { hstNm_.data ( ) }
                 ;
             }
             
-            else [[unlikely]]
+            else [[ unlikely ]]
             {
                 return { std::nullopt };
             }
