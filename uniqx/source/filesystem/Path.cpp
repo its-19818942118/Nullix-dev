@@ -67,7 +67,7 @@ namespace [[
         
         auto _fsp_tmpLinkPath { kr_fsp_newDestPath_ };
         
-        _fsp_tmpLinkPath += ".ufP_ASLink_";
+        _fsp_tmpLinkPath += ".ufP_ASLink";
         
         if
             ( std::fs::is_directory ( *this , _ec_errCode ) )
@@ -167,9 +167,9 @@ namespace [[
         noexcept ( true )
     -> std::expected<uniqx::fs::Path , errika::ErrInt_t_>
     {
-
+        
         std::error_code _ec_errCode { };
-
+        
         if
             ( !std::fs::exists ( *this , _ec_errCode ) || _ec_errCode )
         {
@@ -196,7 +196,7 @@ namespace [[
         
         auto _fsp_tmpLink { kr_fsp_newDestPath_ };
         
-        _fsp_tmpLink += ".ufP_ASLink_";
+        _fsp_tmpLink += ".ufP_ASLink";
         
         if
             ( std::fs::is_directory ( *this , _ec_errCode ) )
@@ -274,7 +274,7 @@ namespace [[
         bool _b_destExists { };
         
         auto _fsp_nlxBackup { kr_fsp_newDestPath_};
-        _fsp_nlxBackup += ".ufP_BASLink_";
+        _fsp_nlxBackup += ".ufP_BASLink";
         
         if
             ( std::filesystem::exists ( kr_fsp_newDestPath_ ) )
@@ -291,7 +291,7 @@ namespace [[
         if
             ( _ec_errCode )
         {
-
+            
             return
                 {
                     
@@ -364,7 +364,7 @@ namespace [[
                 , "" , this->string ( ) , kr_fsp_newDestPath_.string ( )
             )
         ;
-
+        
         return { *this };
         
     }

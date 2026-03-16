@@ -10,9 +10,10 @@ project( nullib
 
 add_library ( nullib STATIC )
 
+find_package ( tomlplusplus REQUIRED )
+
 add_library ( nullix::nullib ALIAS nullib )
 
-find_package ( tomlplusplus REQUIRED )
 
 target_compile_features ( nullib PUBLIC
     cxx_std_26
@@ -99,9 +100,9 @@ target_include_directories ( nullib PUBLIC
     # external/header_only/include/toml++
 )
 
-target_link_options ( nullib PRIVATE -lstdc++exp )
+target_link_options ( nullib PRIVATE stdc++exp )
 
-target_link_libraries ( nullib PRIVATE -lstdc++exp )
+target_link_libraries ( nullib PRIVATE stdc++exp )
 
 target_link_libraries ( nullib PRIVATE tomlplusplus::tomlplusplus )
 
