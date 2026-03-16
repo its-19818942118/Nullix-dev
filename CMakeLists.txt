@@ -69,17 +69,13 @@ target_sources( nullib PRIVATE
 )
 
 target_include_directories ( nullib PUBLIC
-    # external/header_only/include/toml++
-    # external/header_only/include
     uniqx/include/system/process
     uniqx/include/filesystem
-    # external/header_only
     uniqx/include/system
     errika/include/error
     nullix/include
     errika/include
     uniqx/include
-    # external
     nullix
     errika
     uniqx
@@ -87,17 +83,13 @@ target_include_directories ( nullib PUBLIC
     uniqx
     errika
     nullix
-    # external
     uniqx/include
     errika/include
     nullix/include
     errika/include/error
     uniqx/include/system
-    # external/header_only
     uniqx/include/filesystem
     uniqx/include/system/process
-    # external/header_only/include
-    # external/header_only/include/toml++
 )
 
 target_link_options ( nullib PRIVATE stdc++exp )
