@@ -5,7 +5,7 @@ set ( CMAKE_COLOR_DIAGNOSTICS ON )
 project( nullib
     VERSION 0.1.5
     LANGUAGES CXX
-    DESCRIPTION "A set of internal and external libraries for Nullix"
+    DESCRIPTION "A collection of internal libraries for Nullix"
 )
 
 add_library ( nullib STATIC )
@@ -98,4 +98,4 @@ target_link_libraries ( nullib PRIVATE stdc++exp )
 
 target_link_libraries ( nullib PRIVATE tomlplusplus::tomlplusplus )
 
-target_compile_definitions ( nullib PRIVATE TOML_EXCEPTIONS=0 )
+target_compile_definitions ( nullib PRIVATE TOML_EXCEPTIONS=00000 )

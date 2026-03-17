@@ -10,10 +10,11 @@
 #
 #undef ONLY_FORWARD_SYMBOL_DECLS_ERRIKA_
 
+#include "globals.hpp"
 #include "error/error.hpp"
 
 namespace
-    errika::error::_detail
+    errika::error::v0::_detail
 {
     
     [[
@@ -25,7 +26,7 @@ namespace
 } /* namespace errika::error::v2::_detail */
 
 namespace
-    errika::error::_detail
+    errika::error::v0::_detail
 {
     
     [[
@@ -75,7 +76,7 @@ namespace
 } /* namespace errika::error::v2::_detail */
 
 namespace
-    errika::error
+    errika::error::v0
 {
     
     CLASS_CTOR
@@ -317,3 +318,26 @@ namespace
     }
     
 }
+
+namespace
+    errika::error
+{
+    
+    CLASS_CTOR
+        Error::
+            Error
+            (
+                std::size_t_ const k_z_errorCode_ ,
+                std::strv_t_ const k_Sv_errorCat_ ,
+                std::strv_t_ const k_Sv_errorMsg_ ,
+                std::srcLoc_t_ const k_sl_errorCallerLoc_ ,
+                std::srcLoc_t_ const k_sl_errorOriginLoc_
+            ) noexcept ( true )
+        : PM_z_errCode ( k_z_errorCode_ )
+        , PM_Sv_errCat ( k_Sv_errorCat_ )
+        , PM_Sv_errMsg ( k_Sv_errorMsg_ )
+        , PM_sl_errCallerLoc ( k_sl_errorCallerLoc_ )
+        , PM_sl_errOriginLoc ( k_sl_errorOriginLoc_ )
+    { /* void */ }
+    
+} /* namespace errika::error */

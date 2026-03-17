@@ -5,7 +5,7 @@
     
     #include "globals.hpp"
     
-    namespace errika::error
+    namespace errika::error::v0
     {
         
         class Error;
@@ -16,14 +16,31 @@
         
     } /* namespace errika */
     
+    namespace errika::error
+    {
+        
+        class Error;
+        class ErrorCode;
+        
+        using Error_t_ = Error;
+        using ErrCode_t_ = ErrorCode;
+        
+    } /* namespace errika */
+    
     namespace [[
             /* nullAttr_ */
         ]] errika
     {
         
         /* type aliases for Error types */
-        using Err_t_ = error::Err_t_;
-        using ErrInt_t_ = error::ErrCode_t_;
+        
+        using Err_t_ = error::v0::Err_t_;
+        using ErrInt_t_ = error::v0::ErrCode_t_;
+        
+        using Error_t_ = error::Error_t_;
+        using ErrorCode_t_ = error::ErrCode_t_;
+        
+        constexpr inline long const null_t_ { -1L };
         
     } /* namespace errika */
     

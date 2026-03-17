@@ -3,8 +3,7 @@
 #ifndef ERROR_HPP_ERRIKA_
     #define ERROR_HPP_ERRIKA_
     
-    #include "globals.hpp"
-#include <string>
+    #include <string>
     #include <source_location>
     
     #define ONLY_FORWARD_SYMBOL_DECLS_ERRIKA_
@@ -13,8 +12,10 @@
     #
     #undef ONLY_FORWARD_SYMBOL_DECLS_ERRIKA_
     
+    #include "globals.hpp"
+    
     namespace
-        errika::error
+        errika::error::v0
     {
         
         class
@@ -144,5 +145,58 @@
         ;
         
     }
+    
+    namespace
+        errika::error
+    {
+        
+        class [[
+            /* nullAttr_ */
+        ]] Error
+            {
+                
+                private: std::size_t_ PM_z_errCode { };
+                private: std::strv_t_ PM_Sv_errCat { };
+                private: std::strv_t_ PM_Sv_errMsg { };
+                private: std::srcLoc_t_ PM_sl_errCallerLoc { };
+                private: std::srcLoc_t_ PM_sl_errOriginLoc { };
+                
+                public: explicit
+                    CLASS_CTOR Error
+                    (
+                        std::size_t_ const /* k_l_errorCode_ */ ,
+                        std::strv_t_ const /* k_Sv_errorCat_ */ ,
+                        std::strv_t_ const /* k_Sv_errorMsg_ */ ,
+                        std::srcLoc_t_ const /* k_sl_errorCallerLoc_ */ ,
+                        std::srcLoc_t_ const /* k_sl_errorOriginLoc_ */ =
+                        { std::srcLoc_t_::current ( ) }
+                    ) noexcept ( true )
+                ;
+                
+                auto
+                    err_report
+                    ( void /* v_ */ ) const
+                -> std::string
+                {
+                    
+                    std::str_t_ const& ec
+                        {
+                            std::format
+                            (
+                                "error code = {}"
+                                , PM_z_errCode == errika::null_t_
+                                ? "null" : std::format ( "{}" , PM_z_errCode )
+                            )
+                        }
+                    ;
+                    
+                    return { ec };
+                    
+                }
+                
+            } /* class Error */
+        ;
+        
+    } /* namespace errika::error */
     
 #endif /* ERROR_HPP_ERRIKA_ */

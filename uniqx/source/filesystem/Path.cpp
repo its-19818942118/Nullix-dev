@@ -65,9 +65,7 @@ namespace [[
             
         }
         
-        auto _fsp_tmpLinkPath { kr_fsp_newDestPath_ };
-        
-        _fsp_tmpLinkPath += ".ufP_ASLink";
+        auto const& _fsp_tmpLinkPath { kr_fsp_newDestPath_.string ( ) + "ufP_ASLink_" };
         
         if
             ( std::fs::is_directory ( *this , _ec_errCode ) )
@@ -111,6 +109,36 @@ namespace [[
         std::fs::rename
             ( _fsp_tmpLinkPath , kr_fsp_newDestPath_ , _ec_errCode )
         ;
+        
+        if
+            ( _ec_errCode )
+        {
+            
+            return
+                {
+                    
+                    std::unexpected<errika::ErrInt_t_>
+                    {
+                        errika::ErrInt_t_
+                        {
+                            _ec_errCode.value ( ) ,
+                            errika::ErrInt_t_::e_ErrType::Fatal ,
+                            _ec_errCode.message ( ) , k_sl_srcLoc_
+                        }
+                    }
+                    
+                }
+            ;
+            
+        }
+        
+        if
+            ( std::fs::exists ( _fsp_tmpLinkPath , _ec_errCode ) )
+        {
+            
+            std::fs::remove_all ( _fsp_tmpLinkPath , _ec_errCode );
+            
+        }
         
         if
             ( _ec_errCode )
@@ -194,9 +222,7 @@ namespace [[
             
         }
         
-        auto _fsp_tmpLink { kr_fsp_newDestPath_ };
-        
-        _fsp_tmpLink += ".ufP_ASLink";
+        auto const& _fsp_tmpLinkPath { kr_fsp_newDestPath_.string ( ) + ".ufP_ASLink_" };
         
         if
             ( std::fs::is_directory ( *this , _ec_errCode ) )
@@ -235,7 +261,7 @@ namespace [[
             }
             
             std::fs::create_directory_symlink
-                ( *this , _fsp_tmpLink , _ec_errCode )
+                ( *this , _fsp_tmpLinkPath , _ec_errCode )
             ;
             
         }
@@ -244,7 +270,7 @@ namespace [[
         {
             
             std::fs::create_symlink
-                ( *this , _fsp_tmpLink , _ec_errCode )
+                ( *this , _fsp_tmpLinkPath , _ec_errCode )
             ;
             
         }
@@ -274,7 +300,7 @@ namespace [[
         bool _b_destExists { };
         
         auto _fsp_nlxBackup { kr_fsp_newDestPath_};
-        _fsp_nlxBackup += ".ufP_BASLink";
+        _fsp_nlxBackup += ( "_ufP_BASLink_" );
         
         if
             ( std::filesystem::exists ( kr_fsp_newDestPath_ ) )
@@ -310,7 +336,7 @@ namespace [[
             
         }
         
-        std::fs::rename ( _fsp_tmpLink , kr_fsp_newDestPath_ , _ec_errCode );
+        std::fs::rename ( _fsp_tmpLinkPath , kr_fsp_newDestPath_ , _ec_errCode );
         
         if
             ( _ec_errCode )
@@ -324,7 +350,7 @@ namespace [[
                     ( _fsp_nlxBackup , kr_fsp_newDestPath_ , _ec_errCode )
                 ;
                 
-                std::fs::remove ( _fsp_tmpLink );
+                std::fs::remove ( _fsp_tmpLinkPath );
                 
             }
             
@@ -345,6 +371,9 @@ namespace [[
             ;
             
         }
+        
+        std::println ( "{}" , _fsp_tmpLinkPath );
+        std::fs::remove ( _fsp_tmpLinkPath );
         
         std::println
             (

@@ -3,7 +3,8 @@
 #ifndef GLOBALS_HPP_
     #define GLOBALS_HPP_
     
-    #include <unistd.h>
+    #include <sys/types.h>
+#include <unistd.h>
     #include <filesystem> /* IWYU pragma: export */
     #include <source_location>
     
@@ -47,18 +48,24 @@
         
     }
     
+    namespace [[
+            /* nullAttr_ */
+        ]] std
+    {
+        
+        using size_t_ = signed long;
+        
+        using str_t_ = ::std::string;
+        using strv_t_ = ::std::string_view;
+        using srcLoc_t_ = ::std::source_location;
+        
+    } /* namespace std */
+    
     namespace
         std::fs
     {
         using namespace ::std::filesystem;
     } /* namespace std::fs */
-    
-    namespace [[
-        
-        ]] std
-    {
-        using srcLoc_t_ = ::std::source_location;
-    } /* namespace std */
     
     /**************************************************************************
     @brief: wrapping unistd header functions, cause why not? namespaces are
