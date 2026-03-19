@@ -176,23 +176,8 @@
                 auto
                     err_report
                     ( void /* v_ */ ) const
-                -> std::string
-                {
-                    
-                    std::str_t_ const& ec
-                        {
-                            std::format
-                            (
-                                "error code = {}"
-                                , PM_z_errCode == errika::null_t_
-                                ? "null" : std::format ( "{}" , PM_z_errCode )
-                            )
-                        }
-                    ;
-                    
-                    return { ec };
-                    
-                }
+                    noexcept ( true )
+                -> std::str_t_;
                 
             } /* class Error */
         ;

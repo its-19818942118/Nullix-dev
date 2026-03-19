@@ -320,12 +320,12 @@ namespace
 }
 
 namespace
-    errika::error
+    errika
 {
     
     CLASS_CTOR
-        Error::
-            Error
+        error::
+            Error::Error
             (
                 std::size_t_ const k_z_errorCode_ ,
                 std::strv_t_ const k_Sv_errorCat_ ,
@@ -333,11 +333,60 @@ namespace
                 std::srcLoc_t_ const k_sl_errorCallerLoc_ ,
                 std::srcLoc_t_ const k_sl_errorOriginLoc_
             ) noexcept ( true )
-        : PM_z_errCode ( k_z_errorCode_ )
-        , PM_Sv_errCat ( k_Sv_errorCat_ )
-        , PM_Sv_errMsg ( k_Sv_errorMsg_ )
-        , PM_sl_errCallerLoc ( k_sl_errorCallerLoc_ )
-        , PM_sl_errOriginLoc ( k_sl_errorOriginLoc_ )
+        : PM_z_errCode { k_z_errorCode_ }
+        , PM_Sv_errCat { k_Sv_errorCat_ }
+        , PM_Sv_errMsg { k_Sv_errorMsg_ }
+        , PM_sl_errCallerLoc { k_sl_errorCallerLoc_ }
+        , PM_sl_errOriginLoc { k_sl_errorOriginLoc_ }
     { /* void */ }
+    
+    auto error::
+        Error::err_report
+        ( void /* v_ */ ) const
+        noexcept ( true )
+    -> std::str_t_
+    {
+        
+        using namespace std::literals;
+        
+        std::str_t_ const k_Sv_errCodeFmt
+            {
+                std::format
+                (
+                    "{0}"sv
+                    , this->PM_z_errCode == errika::null_t_
+                    ? "null"sv : std::format ( "{}" , this->PM_z_errCode )
+                )
+            }
+        ;
+        
+        std::str_t_ const&
+            k_S_errReportFmt
+            {
+                
+                std::format
+                (
+                    "error code = {1}\n"sv
+                    "error caused by function/method {2:?}\n"sv
+                    "error caller source location [L,C] \"{3}#{4}:{5}\"\n"sv
+                    "error triggered by function/method {6:?}\n"sv
+                    "error origin source location [L,C] \"{7}#{8}:{9}\"\n"sv
+                    , "" , k_Sv_errCodeFmt
+                    , this->PM_sl_errCallerLoc.function_name ( )
+                    , this->PM_sl_errCallerLoc.file_name ( )
+                    , this->PM_sl_errCallerLoc.line ( )
+                    , this->PM_sl_errCallerLoc.column ( )
+                    , this->PM_sl_errOriginLoc.function_name ( )
+                    , this->PM_sl_errOriginLoc.file_name ( )
+                    , this->PM_sl_errOriginLoc.line ( )
+                    , this->PM_sl_errOriginLoc.column ( )
+                )
+                
+            }
+        ;
+        
+        return { k_S_errReportFmt };
+        
+    }
     
 } /* namespace errika::error */
