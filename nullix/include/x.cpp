@@ -6,44 +6,44 @@
 
 auto inline
     adjustVolume
-    ( const int stepDelta_ )
+    ( const int k_i_stepDelta_ )
 {
     using namespace nullix;
     
-    constexpr int _maxVolume { 150 } , _minVolume { };
+    constexpr int const _kK_maxVolume { 150 } , _kK_minVolume { };
     
     const int
-        _curVolume
+        _k_i_curVolume
         { std::stoi ( utils::system ( "pamixer --get-volume" ) ) }
     ;
     
     // 3. Apply the math (+10 or -10)
-    int _newVolume { _curVolume + stepDelta_ };
+    int _i_newVolume { _k_i_curVolume + k_i_stepDelta_ };
     
     // 4. Constrain (keep it between 0 and 150)
-    if ( _newVolume > _maxVolume ) _newVolume = _maxVolume;
-    if ( _newVolume < _minVolume ) _newVolume = _minVolume;
+    if ( _i_newVolume > _kK_maxVolume ) _i_newVolume = _kK_maxVolume;
+    if ( _i_newVolume < _kK_minVolume ) _i_newVolume = _kK_minVolume;
     
     const
       std::string
-        _command
+        _k_command
         {
             std::format
             (
                 "pamixer --allow-boost --set-limit {} --set-volume {}" ,
-                _maxVolume , _newVolume
+                _kK_maxVolume , _i_newVolume
             )
         }
     ;
     
-    system ( _command.c_str ( ) );
+    system ( _k_command.c_str ( ) );
     
     return
         (
             std::format
             (
                 "Volume adjusted: {} -> {}" ,
-                _curVolume , _newVolume
+                _k_i_curVolume , _i_newVolume
             )
         )
     ;
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     // 1. Initialize Parser
     nullix::ArgsParser argsparser { static_cast<size_t>(argc), argv };
     
-    // 2. Define Command Map
+    // 2. Define k_Command Map
     nullix::ArgsParser::Args_t_ volumeCtl;
 
     // --increase implementation

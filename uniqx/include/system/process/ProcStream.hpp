@@ -1,5 +1,8 @@
 /* #pragma once */
-
+/// @brief: currently very mistleading.
+/// should be named `ProcBuffer` since the current process engine stores
+// buffers
+/// @TODO: Create an actual ProcStream implementation for proc Engine
 #ifndef PROC_STREAM_HPP_UNIQX_
     #define PROC_STREAM_HPP_UNIQX_
     

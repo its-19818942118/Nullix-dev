@@ -92,9 +92,9 @@ target_include_directories ( nullib PUBLIC
     uniqx/include/system/process
 )
 
-target_link_options ( nullib PRIVATE stdc++exp )
+target_link_options ( nullib PRIVATE -lstdc++exp )
 
-target_link_libraries ( nullib PRIVATE stdc++exp )
+target_link_libraries ( nullib PRIVATE -lstdc++exp )
 
 target_link_libraries ( nullib PRIVATE tomlplusplus::tomlplusplus )
 

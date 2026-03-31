@@ -29,12 +29,15 @@
                 private: using opt_t = ProcStream;
                 private: using Result_t = ProcResult;
                 private: using string_t = std::string;
-                private: using vecStr_t = std::vector<std::string>;
+                private: using vecCstr_t = std::vector<char*>;
+                private: using vecCxStr_t = std::vector<string_t>;
                 
+                private: mutable long PMm_argNSync;
                 private: mutable opt_t PMm_pOpt_opt;
                 private: mutable string_t PMm_str_command;
-                private: mutable vecStr_t PMm_vecStr_argv;
                 private: mutable string_t PMm_str_inputData;
+                private: mutable vecCstr_t PMm_vecStr_cArgv;
+                private: mutable vecCxStr_t PMm_vecStr_argv;
                 private: mutable ProcResult PMm_pRes_cmdResult;
                 private: mutable SubProcess const* PMmkp_sbp_prevCmd { };
                 
@@ -42,7 +45,7 @@
                 public: explicit CLASS_CTOR SubProcess
                     (
                         string_t const& /* kr_str_binName_ */ ,
-                        vecStr_t const& /* kr_vecStr_argv_ */
+                        vecCxStr_t const& /* kr_vecStr_argv_ */
                     )
                 ;
                 
@@ -51,17 +54,21 @@
                     ( opt_t const /* pOpt_IO_ */ = opt_t::status ) const
                 -> Result_t;
                 
-                public: auto
-                    static create
-                    (
-                        string_t const& /* kr_str_binName_ */ = { } ,
-                        vecStr_t const& /* kr_vecStr_argv_ */ = { }
-                    )
-                -> SubProcess;
+                private: auto mt_v_syncArgv
+                    ( void /* v_ */ ) const
+                -> void;
                 
                 private: auto mt_v_printRecursive
                     ( bool const ) const
                 -> void;
+                
+                public: auto
+                    static create
+                    (
+                        string_t const& /* kr_str_binName_ */ = { } ,
+                        vecCxStr_t const& /* kr_vecStr_argv_ */ = { }
+                    )
+                -> SubProcess;
                 
                 public: auto printArgs
                     ( void /* v_ */ ) const

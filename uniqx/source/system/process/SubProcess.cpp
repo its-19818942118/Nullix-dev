@@ -27,13 +27,14 @@ namespace [[
             SubProcess
             (
                 string_t const& kr_str_cmdName_ ,
-                vecStr_t const& kr_vecStr_argv_
+                vecCxStr_t const& kr_vecStr_argv_
             )
         : PMm_str_command ( kr_str_cmdName_ )
         , PMm_vecStr_argv ( kr_vecStr_argv_ )
     {
+        
         this->PMm_vecStr_argv.reserve
-            ( this->PMm_vecStr_argv.size ( ) + +32ZU )
+            ( this->PMm_vecStr_argv.size ( ) + ( +1ZU ) )
         ;
         
         this->PMm_vecStr_argv.emplace_back ( kr_str_cmdName_ );
@@ -41,10 +42,41 @@ namespace [[
         std::rotate
             (
                 this->PMm_vecStr_argv.rbegin ( ) ,
-                this->PMm_vecStr_argv.rbegin ( ) + +1ZU ,
+                this->PMm_vecStr_argv.rbegin ( ) + ( +1ZU ) ,
                 this->PMm_vecStr_argv.rend ( )
             )
         ;
+        
+        // this->mt_v_syncArgv ( );
+        
+        this->PMm_argNSync = true;
+        
+    }
+    
+    auto [[
+        /* nullAtrr_  */
+    ]] SubProcess::
+        mt_v_syncArgv
+        ( void /* v_ */ ) const
+    -> void
+    {
+        
+        this->PMm_vecStr_cArgv.clear ( );
+        
+        constexpr auto const _kK_argvTerminator { nullptr };
+        auto const _k_zu_argc { this->PMm_vecStr_argv.size ( ) + ( +1ZU ) }; 
+        
+        this->PMm_vecStr_cArgv.reserve ( _k_zu_argc );
+        
+        for
+            ( auto& arg_ : this->PMm_vecStr_argv )
+        {
+            
+            this->PMm_vecStr_cArgv.emplace_back ( arg_.data ( ) );
+            
+        }
+        
+        this->PMm_vecStr_cArgv.emplace_back ( _kK_argvTerminator );
         
     }
     
@@ -129,23 +161,37 @@ namespace [[
                 _errPipeDes_TX >>= STDERR_FILENO;
             }
             
-            auto const
-                k_zu_argvMax
-                { this->PMm_vecStr_argv.size ( ) + +3ZU }
-            ;
+            // auto const
+            //     _k_zu_argvMax
+            //     { this->PMm_vecStr_argv.size ( ) + +3ZU }
+            // ;
             
-            std::vector<char*> _args { };
-            _args.reserve ( k_zu_argvMax );
+            // std::vector<char*> _args { };
+            // _args.reserve ( _k_zu_argvMax );
             
-            for
-                ( auto& arg_ : this->PMm_vecStr_argv )
+            // for
+            //     ( auto& arg_ : this->PMm_vecStr_argv )
+            // {
+            //     _args.emplace_back ( arg_.data ( ) );
+            // }
+            
+            // _args.emplace_back ( nullptr );
+            if
+                ( this->PMm_argNSync )
             {
-                _args.emplace_back ( arg_.data ( ) );
+                
+                this->mt_v_syncArgv ( );
+                
+                this->PMm_argNSync = false;
+                
             }
             
-            _args.emplace_back ( nullptr );
-            
-            ::execvp ( _args.front ( ) , _args.data ( ) );
+            ::execvp
+                (
+                    this->PMm_vecStr_cArgv.front ( ) ,
+                    this->PMm_vecStr_cArgv.data ( )
+                )
+            ;
             
             ::_exit ( +127 );
             
@@ -166,10 +212,10 @@ namespace [[
             _outPipeDes_RX.setNonBlock ( true );
             _errPipeDes_RX.setNonBlock ( true );
             
-            constexpr std::size_t K_zu_bufSize { /* +64 << +10 */ };
+            constexpr std::size_t const _kK_zu_bufSz { +64 << +10 };
             
-            string_t _str_outResData; _str_outResData.reserve ( K_zu_bufSize );
-            string_t _str_errResData; _str_errResData.reserve ( K_zu_bufSize );
+            string_t _str_outResData; _str_outResData.reserve ( _kK_zu_bufSz );
+            string_t _str_errResData; _str_errResData.reserve ( _kK_zu_bufSz );
             
             while
                 (
@@ -188,13 +234,11 @@ namespace [[
                 )
             {
                 
-                [[maybe_unused]]
-                bool const k_b_inRx
+                [[maybe_unused]] bool const k_b_inRx
                     { _inPipeDes_TX << this->PMm_str_inputData }
                 ;
                 
-                [[maybe_unused]]
-                bool const k_b_outRx
+                [[maybe_unused]] bool const k_b_outRx
                     { _outPipeDes_RX >> _str_outResData }
                 ;
                 
@@ -243,7 +287,7 @@ namespace [[
     auto SubProcess::create
         (
             string_t const& kr_str_cmdName_ ,
-            vecStr_t const& kr_vecStr_argv_
+            vecCxStr_t const& kr_vecStr_argv_
         )
     -> SubProcess
     {
@@ -368,6 +412,8 @@ namespace [[
         
         this->PMm_vecStr_argv.front ( ) = kr_str_cmdName_;
         
+        this->PMm_argNSync = true;
+        
         return ( *this );
         
     }
@@ -392,8 +438,13 @@ namespace [[
                 ; kr_aut_itr == this->PMm_vecStr_argv.end ( )
             )
         {
+            
             this->PMm_vecStr_argv.emplace_back ( kr_str_argv_ );
+            
+            this->PMm_argNSync = true;
+            
         }
+        
         
         return ( *this );
         

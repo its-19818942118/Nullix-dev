@@ -18,11 +18,11 @@ namespace [[
     -> ProcPipe
     {
         
-        constexpr int K_i_pipeDes_RX { +0 };
-        constexpr int K_i_pipeDes_TX { +1 };
-        constexpr int K_i_pipeDesLim { +2 };
+        constexpr int const _kK_i_pipeDes_RX { +0 };
+        constexpr int const _kK_i_pipeDes_TX { +1 };
+        constexpr int const _kK_i_pipeDesLim { +2 };
         
-        std::array<int , K_i_pipeDesLim> _i_arr_pipeDes { };
+        std::array<int , _kK_i_pipeDesLim> _i_arr_pipeDes { };
         
         if
             ( ::pipe ( _i_arr_pipeDes.data ( ) ) == -1 )
@@ -36,12 +36,12 @@ namespace [[
                 
                 .pm_pipeDes_RX
                 {
-                    _i_arr_pipeDes.at ( K_i_pipeDes_RX )
+                    _i_arr_pipeDes.at ( _kK_i_pipeDes_RX )
                 } ,
                 
                 .pm_pipeDes_TX
                 {
-                    _i_arr_pipeDes.at ( K_i_pipeDes_TX )
+                    _i_arr_pipeDes.at ( _kK_i_pipeDes_TX )
                 }
                 
             }

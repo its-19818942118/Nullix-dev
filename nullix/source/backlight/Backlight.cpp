@@ -156,13 +156,13 @@
             
             // convert the raw k_i64_brightness to percent %
             // constexpr double cxp_percent { 100.0 };
-            constexpr double K_percent { +100.0 };
+            constexpr double _kK_percent { +100.0 };
             double const
                 k_d_brightnessPercent
                 {
                     static_cast <double> ( k_i64_brightness ) *
                     // cxp_percent / k_i64_maxBrightness
-                    K_percent / k_i64_maxBrightness
+                    _kK_percent / k_i64_maxBrightness
                 }
             ;
             

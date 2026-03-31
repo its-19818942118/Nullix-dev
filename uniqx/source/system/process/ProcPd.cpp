@@ -118,7 +118,7 @@ namespace [[
         
         using enum PollStatus;
         
-        constexpr nfds_t k_nfd_pdLim { +1 };
+        constexpr nfds_t const _kK_nfd_pdLim { +1 };
         
         if ( this->closed ( ) ) [[ unlikely ]] return _em_Closed;
         
@@ -132,7 +132,7 @@ namespace [[
         ;
         
         if
-            ( ::poll ( &_pfd_pd , k_nfd_pdLim , k_i_tmoutMS_ ) <= +0 )
+            ( ::poll ( &_pfd_pd , _kK_nfd_pdLim , k_i_tmoutMS_ ) <= +0 )
         {
             return _em_Sleep;
         }
@@ -167,12 +167,12 @@ namespace [[
         if ( k_pst_state != _em_Data ) [[ unlikely ]] return false;
         
         // 64kb buffer
-        constexpr size_t K_zu_pipeBufSize { +64 << +10 };
+        constexpr size_t const _kK_zu_pipeBufSize { +64 << +10 };
         size_t const K_zu_bufOffset { r_str_resBufData_TX_.size ( ) };
         
         r_str_resBufData_TX_.resize_and_overwrite
             (
-                K_zu_bufOffset + K_zu_pipeBufSize ,
+                K_zu_bufOffset + _kK_zu_pipeBufSize ,
                 [ & ] ( char* c_str_ , std::size_t zu_capacity_ )
                 {
                     std::span<char>

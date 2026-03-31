@@ -37,6 +37,8 @@
                 ]] process
             {
                 
+                constexpr std::size_t argvLimit { 1 << 10 };
+                
                 struct [[ /* Process Config */ ]] ProcRules;
                 struct [[ /* Process DataIO */ ]] ProcStream;
                 class [[ /* Process Manager */ ]] SubProcess;
